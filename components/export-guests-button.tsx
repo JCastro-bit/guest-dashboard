@@ -18,9 +18,9 @@ interface ExportGuestsButtonProps {
 }
 
 export function ExportGuestsButton({ guests }: ExportGuestsButtonProps) {
-  const handleExportExcel = () => {
+  const handleExportExcel = async () => {
     const timestamp = new Date().toISOString().split("T")[0]
-    exportGuestsToExcel(guests, `guests_${timestamp}.xlsx`)
+    await exportGuestsToExcel(guests, `guests_${timestamp}.xlsx`)
   }
 
   const handleExportPDF = () => {

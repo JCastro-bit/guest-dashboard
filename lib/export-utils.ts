@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx"
+import ExcelJS from "exceljs"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import type { Guest } from "./types"
@@ -6,37 +6,52 @@ import type { Guest } from "./types"
 /**
  * Export guests data to Excel file
  */
-export function exportGuestsToExcel(guests: Guest[], filename = "guests.xlsx") {
-  // Prepare data for export
-  const data = guests.map((guest) => ({
-    Name: guest.name,
-    Side: guest.side,
-    Status: guest.status,
-    Email: guest.email || "N/A",
-    Phone: guest.phone || "N/A",
-    "Created At": new Date(guest.createdAt).toLocaleDateString(),
-  }))
+export async function exportGuestsToExcel(guests: Guest[], filename = "guests.xlsx") {
+  // Create a new workbook and worksheet
+  const workbook = new ExcelJS.Workbook()
+  const worksheet = workbook.addWorksheet("Guests")
 
-  // Create worksheet
-  const worksheet = XLSX.utils.json_to_sheet(data)
-
-  // Set column widths
-  const columnWidths = [
-    { wch: 25 }, // Name
-    { wch: 10 }, // Side
-    { wch: 12 }, // Status
-    { wch: 30 }, // Email
-    { wch: 15 }, // Phone
-    { wch: 15 }, // Created At
+  // Define columns with headers and widths
+  worksheet.columns = [
+    { header: "Name", key: "name", width: 25 },
+    { header: "Side", key: "side", width: 12 },
+    { header: "Status", key: "status", width: 15 },
+    { header: "Email", key: "email", width: 30 },
+    { header: "Phone", key: "phone", width: 18 },
+    { header: "Created At", key: "createdAt", width: 15 },
   ]
-  worksheet["!cols"] = columnWidths
 
-  // Create workbook
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Guests")
+  // Style the header row
+  worksheet.getRow(1).font = { bold: true }
+  worksheet.getRow(1).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FFE2E8F0" }, // slate-200
+  }
 
-  // Export file
-  XLSX.writeFile(workbook, filename)
+  // Add data rows
+  guests.forEach((guest) => {
+    worksheet.addRow({
+      name: guest.name,
+      side: guest.side,
+      status: guest.status,
+      email: guest.email || "N/A",
+      phone: guest.phone || "N/A",
+      createdAt: new Date(guest.createdAt).toLocaleDateString(),
+    })
+  })
+
+  // Generate buffer and trigger download
+  const buffer = await workbook.xlsx.writeBuffer()
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(url)
 }
 
 /**
