@@ -5,6 +5,22 @@ import { Users, CheckCircle, Clock, XCircle } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "View your wedding guest statistics, track RSVPs, and manage recent invitations. Get a complete overview of your wedding planning progress.",
+  openGraph: {
+    title: "Dashboard | Guest Dashboard",
+    description: "View your wedding guest statistics, track RSVPs, and manage recent invitations.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dashboard | Guest Dashboard",
+    description: "View your wedding guest statistics, track RSVPs, and manage recent invitations.",
+  },
+}
 
 export default async function DashboardPage() {
   const stats = await getStats()

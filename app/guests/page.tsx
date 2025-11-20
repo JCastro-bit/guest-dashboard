@@ -4,6 +4,22 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Filter } from "lucide-react"
 import { ExportGuestsButton } from "@/components/export-guests-button"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Guest List",
+  description: "View and manage your complete wedding guest list. Search, filter, and export guest information. Track attendance status and contact details.",
+  openGraph: {
+    title: "Guest List | Guest Dashboard",
+    description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
+    url: "/guests",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guest List | Guest Dashboard",
+    description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
+  },
+}
 
 export default async function GuestsPage() {
   const invitations = await getInvitationsWithGuests()
