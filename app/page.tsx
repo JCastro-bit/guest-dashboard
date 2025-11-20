@@ -1,6 +1,7 @@
 import { getStats, getInvitationsWithGuests } from "@/lib/api"
 import { StatCard } from "@/components/stat-card"
 import { InvitationCard } from "@/components/invitation-card"
+import { GuestMessages } from "@/components/guest-messages"
 import { Users, CheckCircle, Clock, XCircle } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -80,6 +81,8 @@ export default async function DashboardPage() {
           ))}
         </div>
       </div>
+
+      <GuestMessages invitations={invitations} />
     </div>
   )
 }
