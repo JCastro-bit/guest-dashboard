@@ -1,10 +1,10 @@
 import { getInvitationsWithGuests } from "@/lib/api"
 import { InvitationCard } from "@/components/invitation-card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Search, Filter } from "lucide-react"
+import { Filter } from "lucide-react"
 import { CreateInvitationModal } from "@/components/create-invitation-modal"
 import type { Metadata } from "next"
+import { SearchButton } from "@/components/search-button"
 
 export const metadata: Metadata = {
   title: "Invitations",
@@ -32,10 +32,7 @@ export default async function InvitationsPage() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-lg shadow-sm border">
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search invitations..." className="pl-8" />
-        </div>
+        <SearchButton variant="prominent" className="w-full sm:max-w-md" />
         <div className="flex gap-2 w-full sm:w-auto">
           <Button variant="outline" size="sm" className="w-full sm:w-auto bg-transparent">
             <Filter className="mr-2 h-4 w-4" />

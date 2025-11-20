@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import type { Metadata } from "next"
+import { SearchButton } from "@/components/search-button"
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -29,14 +30,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-3xl font-serif font-bold tracking-tight">Dashboard</h2>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
+          <SearchButton variant="prominent" className="hidden sm:flex" />
           <Button asChild>
             <Link href="/invitations">Manage Invitations</Link>
           </Button>
         </div>
       </div>
+
+      <SearchButton variant="prominent" className="sm:hidden" />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard title="Total Guests" value={stats.totalGuests} icon={Users} description="Across all invitations" />

@@ -33,21 +33,30 @@ export function Navigation() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
 
+  const handleSearchClick = () => {
+    document.dispatchEvent(new Event("open-search"))
+  }
+
   return (
     <>
       {/* Mobile Navigation */}
       <div className="md:hidden flex items-center justify-between p-4 border-b bg-background">
         <div className="font-serif text-xl font-bold">Wedding Admin</div>
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-72">
-            <SidebarContent pathname={pathname} onNavigate={() => setIsOpen(false)} />
-          </SheetContent>
-        </Sheet>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={handleSearchClick}>
+            <Search className="h-5 w-5" />
+          </Button>
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-72">
+              <SidebarContent pathname={pathname} onNavigate={() => setIsOpen(false)} />
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
 
       {/* Desktop Sidebar */}
