@@ -10,17 +10,20 @@ import { notFound } from "next/navigation"
 import { getInvitationStatus, getGuestCount } from "@/lib/utils"
 
 interface InvitationDetailsPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function InvitationDetailsPage({ params }: InvitationDetailsPageProps) {
+  // In Next.js 16, params is a Promise and must be awaited
+  const { id } = await params
+
   try {
     // Fetch invitation and its guests in parallel
     const [invitation, allGuests] = await Promise.all([
-      getInvitation(params.id),
-      getGuests(params.id),
+      getInvitation(id),
+      getGuests(id),
     ])
 
     // Enrich invitation with guests
