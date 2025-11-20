@@ -1,10 +1,10 @@
 import { getInvitationsWithGuests } from "@/lib/api"
-import { InvitationCard } from "@/components/invitation-card"
 import { Button } from "@/components/ui/button"
 import { Filter } from "lucide-react"
 import { CreateInvitationModal } from "@/components/create-invitation-modal"
 import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
+import { InvitationsView } from "@/components/invitations-view"
 
 export const metadata: Metadata = {
   title: "Invitations",
@@ -41,11 +41,7 @@ export default async function InvitationsPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {invitations.map((invitation) => (
-          <InvitationCard key={invitation.id} invitation={invitation} />
-        ))}
-      </div>
+      <InvitationsView invitations={invitations} />
     </div>
   )
 }
