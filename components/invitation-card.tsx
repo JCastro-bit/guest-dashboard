@@ -1,5 +1,3 @@
-"use client"
-
 import type { Invitation } from "@/lib/types"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -7,13 +5,13 @@ import { StatusBadge } from "@/components/status-badge"
 import { Users, Calendar, MapPin } from "lucide-react"
 import { format } from "date-fns"
 import { getInvitationStatus, getGuestCount } from "@/lib/utils"
+import Link from "next/link"
 
 interface InvitationCardProps {
   invitation: Invitation
-  onView?: (invitation: Invitation) => void
 }
 
-export function InvitationCard({ invitation, onView }: InvitationCardProps) {
+export function InvitationCard({ invitation }: InvitationCardProps) {
   const guestCount = getGuestCount(invitation)
   const status = getInvitationStatus(invitation)
 
@@ -51,8 +49,8 @@ export function InvitationCard({ invitation, onView }: InvitationCardProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full bg-transparent" onClick={() => onView?.(invitation)}>
-          View Details
+        <Button variant="outline" className="w-full bg-transparent" asChild>
+          <Link href={`/invitations/${invitation.id}`}>View Details</Link>
         </Button>
       </CardFooter>
     </Card>
