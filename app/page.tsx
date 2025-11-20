@@ -1,4 +1,4 @@
-import { getStats, getInvitations } from "@/lib/api"
+import { getStats, getInvitationsWithGuests } from "@/lib/api"
 import { StatCard } from "@/components/stat-card"
 import { InvitationCard } from "@/components/invitation-card"
 import { Users, CheckCircle, Clock, XCircle } from "lucide-react"
@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react"
 
 export default async function DashboardPage() {
   const stats = await getStats()
-  const invitations = await getInvitations()
+  const invitations = await getInvitationsWithGuests()
   const recentInvitations = invitations.slice(0, 3)
 
   return (

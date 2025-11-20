@@ -1,4 +1,4 @@
-import { getInvitations } from "@/lib/api"
+import { getInvitationsWithGuests } from "@/lib/api"
 import { InvitationCard } from "@/components/invitation-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -6,7 +6,7 @@ import { Search, Filter } from "lucide-react"
 import { CreateInvitationModal } from "@/components/create-invitation-modal"
 
 export default async function InvitationsPage() {
-  const invitations = await getInvitations()
+  const invitations = await getInvitationsWithGuests()
 
   return (
     <div className="space-y-8">

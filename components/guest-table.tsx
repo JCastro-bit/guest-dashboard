@@ -36,10 +36,7 @@ export function GuestTable({ guests }: GuestTableProps) {
           {guests.map((guest) => (
             <TableRow key={guest.id}>
               <TableCell className="font-medium">
-                <div className="flex flex-col">
-                  <span>{guest.name}</span>
-                  {guest.isPlusOne && <span className="text-xs text-muted-foreground">Plus One</span>}
-                </div>
+                <span>{guest.name}</span>
               </TableCell>
               <TableCell>
                 <Badge variant="secondary" className="capitalize">

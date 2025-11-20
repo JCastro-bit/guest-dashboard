@@ -1,105 +1,209 @@
-import type { Invitation, DashboardStats } from "./types"
+import type {
+  Invitation,
+  Guest,
+  DashboardStats,
+  PaginatedResponse,
+  CreateInvitationRequest,
+  CreateInvitationWithGuestsRequest,
+  CreateGuestRequest
+} from "./types"
 
-// Mock Data
-const MOCK_INVITATIONS: Invitation[] = [
-  {
-    id: "1",
-    name: "The Smith Family",
-    status: "confirmed",
-    maxGuests: 4,
-    sentAt: "2023-10-01T10:00:00Z",
-    viewedAt: "2023-10-02T15:30:00Z",
-    guests: [
-      {
-        id: "g1",
-        invitationId: "1",
-        name: "John Smith",
-        email: "john@example.com",
-        side: "groom",
-        status: "confirmed",
-        isPlusOne: false,
-      },
-      {
-        id: "g2",
-        invitationId: "1",
-        name: "Jane Smith",
-        email: "jane@example.com",
-        side: "groom",
-        status: "confirmed",
-        isPlusOne: false,
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Alice Johnson",
-    status: "pending",
-    maxGuests: 1,
-    sentAt: "2023-10-05T09:00:00Z",
-    guests: [
-      {
-        id: "g3",
-        invitationId: "2",
-        name: "Alice Johnson",
-        side: "bride",
-        status: "pending",
-        isPlusOne: false,
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "Bob & Carol",
-    status: "declined",
-    maxGuests: 2,
-    sentAt: "2023-10-01T11:00:00Z",
-    viewedAt: "2023-10-03T14:00:00Z",
-    guests: [
-      {
-        id: "g4",
-        invitationId: "3",
-        name: "Bob Williams",
-        side: "mutual",
-        status: "declined",
-        isPlusOne: false,
-      },
-      {
-        id: "g5",
-        invitationId: "3",
-        name: "Carol Williams",
-        side: "mutual",
-        status: "declined",
-        isPlusOne: false,
-      },
-    ],
-  },
-]
+// Get API URL from environment variable
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
 
-// Simulate API delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+// Helper function to handle API requests
+async function fetchAPI<T>(
+  endpoint: string,
+  options?: RequestInit
+): Promise<T> {
+  const url = `${API_URL}${endpoint}`
 
-export async function getInvitations(): Promise<Invitation[]> {
-  await delay(500)
-  return [...MOCK_INVITATIONS]
+  const defaultOptions: RequestInit = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    ...options,
+  }
+
+  try {
+    const response = await fetch(url, defaultOptions)
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`API Error (${response.status}): ${errorText}`)
+    }
+
+    // Handle 204 No Content responses
+    if (response.status === 204) {
+      return undefined as T
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error(`API request failed: ${url}`, error)
+    throw error
+  }
 }
 
-export async function getInvitation(id: string): Promise<Invitation | undefined> {
-  await delay(300)
-  return MOCK_INVITATIONS.find((inv) => inv.id === id)
+// ==================== Invitations API ====================
+
+export async function getInvitations(
+  page?: number,
+  limit?: number
+): Promise<Invitation[]> {
+  const params = new URLSearchParams()
+  if (page) params.append("page", page.toString())
+  if (limit) params.append("limit", limit.toString())
+
+  const query = params.toString() ? `?${params.toString()}` : ""
+  const result = await fetchAPI<Invitation[] | PaginatedResponse<Invitation>>(
+    `/api/v1/invitations/${query}`
+  )
+
+  // Handle both array and paginated response formats
+  return Array.isArray(result) ? result : result.data
 }
+
+/**
+ * Get all invitations enriched with their guests.
+ * Since the GET /api/v1/invitations/ endpoint doesn't include guests,
+ * this function fetches guests separately and enriches the invitations.
+ */
+export async function getInvitationsWithGuests(
+  page?: number,
+  limit?: number
+): Promise<Invitation[]> {
+  // Fetch invitations and all guests in parallel
+  const [invitations, allGuests] = await Promise.all([
+    getInvitations(page, limit),
+    getGuests(), // Get all guests
+  ])
+
+  // Group guests by invitationId
+  const guestsByInvitation = allGuests.reduce((acc, guest) => {
+    if (guest.invitationId) {
+      if (!acc[guest.invitationId]) {
+        acc[guest.invitationId] = []
+      }
+      acc[guest.invitationId].push(guest)
+    }
+    return acc
+  }, {} as Record<string, Guest[]>)
+
+  // Enrich invitations with their guests
+  return invitations.map((invitation) => ({
+    ...invitation,
+    guests: guestsByInvitation[invitation.id] || [],
+  }))
+}
+
+export async function getInvitation(id: string): Promise<Invitation> {
+  return fetchAPI<Invitation>(`/api/v1/invitations/${id}`)
+}
+
+export async function createInvitation(
+  data: CreateInvitationRequest
+): Promise<Invitation> {
+  return fetchAPI<Invitation>("/api/v1/invitations/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function createInvitationWithGuests(
+  data: CreateInvitationWithGuestsRequest
+): Promise<Invitation> {
+  return fetchAPI<Invitation>("/api/v1/invitations/with-guests", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateInvitation(
+  id: string,
+  data: Partial<CreateInvitationRequest>
+): Promise<Invitation> {
+  return fetchAPI<Invitation>(`/api/v1/invitations/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteInvitation(id: string): Promise<void> {
+  return fetchAPI<void>(`/api/v1/invitations/${id}`, {
+    method: "DELETE",
+  })
+}
+
+// ==================== Guests API ====================
+
+export async function getGuests(
+  invitationId?: string,
+  page?: number,
+  limit?: number
+): Promise<Guest[]> {
+  const params = new URLSearchParams()
+  if (invitationId) params.append("invitationId", invitationId)
+  if (page) params.append("page", page.toString())
+  if (limit) params.append("limit", limit.toString())
+
+  const query = params.toString() ? `?${params.toString()}` : ""
+  const result = await fetchAPI<Guest[] | PaginatedResponse<Guest>>(
+    `/api/v1/guests/${query}`
+  )
+
+  // Handle both array and paginated response formats
+  return Array.isArray(result) ? result : result.data
+}
+
+export async function getGuest(id: string): Promise<Guest> {
+  return fetchAPI<Guest>(`/api/v1/guests/${id}`)
+}
+
+export async function createGuest(data: CreateGuestRequest): Promise<Guest> {
+  return fetchAPI<Guest>("/api/v1/guests/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateGuest(
+  id: string,
+  data: Partial<CreateGuestRequest>
+): Promise<Guest> {
+  return fetchAPI<Guest>(`/api/v1/guests/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteGuest(id: string): Promise<void> {
+  return fetchAPI<void>(`/api/v1/guests/${id}`, {
+    method: "DELETE",
+  })
+}
+
+// ==================== Stats API ====================
 
 export async function getStats(): Promise<DashboardStats> {
-  await delay(500)
-  const allGuests = MOCK_INVITATIONS.flatMap((inv) => inv.guests)
+  const stats = await fetchAPI<DashboardStats>("/api/v1/stats/dashboard")
 
+  // Add backward compatibility fields
   return {
-    totalGuests: allGuests.length,
-    confirmedGuests: allGuests.filter((g) => g.status === "confirmed").length,
-    declinedGuests: allGuests.filter((g) => g.status === "declined").length,
-    pendingGuests: allGuests.filter((g) => g.status === "pending").length,
-    totalInvitations: MOCK_INVITATIONS.length,
-    confirmedInvitations: MOCK_INVITATIONS.filter((i) => i.status === "confirmed").length,
-    pendingInvitations: MOCK_INVITATIONS.filter((i) => i.status === "pending").length,
-    declinedInvitations: MOCK_INVITATIONS.filter((i) => i.status === "declined").length,
+    ...stats,
+    confirmedGuests: stats.confirmed,
+    declinedGuests: stats.declined,
+    pendingGuests: stats.pending,
+  }
+}
+
+// ==================== Health Check ====================
+
+export async function healthCheck(): Promise<boolean> {
+  try {
+    await fetchAPI<void>("/health")
+    return true
+  } catch {
+    return false
   }
 }
