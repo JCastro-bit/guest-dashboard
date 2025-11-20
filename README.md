@@ -119,3 +119,13 @@ El frontend consume los siguientes endpoints del backend:
 ## Tipos y Schema
 
 Los tipos TypeScript del frontend están sincronizados con el schema OpenAPI del backend. Ver `lib/types.ts` para más detalles.
+
+## Carga de Datos Enriquecidos
+
+El endpoint `GET /api/v1/invitations/` del backend no incluye los invitados en la respuesta por razones de rendimiento. Para resolver esto, el frontend implementa la función `getInvitationsWithGuests()` que:
+
+1. Obtiene todas las invitaciones en paralelo con todos los invitados
+2. Agrupa los invitados por `invitationId`
+3. Enriquece cada invitación con su array correspondiente de invitados
+
+Esto permite mostrar correctamente el número de invitados en las tarjetas de invitación sin necesidad de hacer múltiples llamadas al API.

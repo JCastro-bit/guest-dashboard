@@ -64,6 +64,39 @@ export async function getInvitations(
   return Array.isArray(result) ? result : result.data
 }
 
+/**
+ * Get all invitations enriched with their guests.
+ * Since the GET /api/v1/invitations/ endpoint doesn't include guests,
+ * this function fetches guests separately and enriches the invitations.
+ */
+export async function getInvitationsWithGuests(
+  page?: number,
+  limit?: number
+): Promise<Invitation[]> {
+  // Fetch invitations and all guests in parallel
+  const [invitations, allGuests] = await Promise.all([
+    getInvitations(page, limit),
+    getGuests(), // Get all guests
+  ])
+
+  // Group guests by invitationId
+  const guestsByInvitation = allGuests.reduce((acc, guest) => {
+    if (guest.invitationId) {
+      if (!acc[guest.invitationId]) {
+        acc[guest.invitationId] = []
+      }
+      acc[guest.invitationId].push(guest)
+    }
+    return acc
+  }, {} as Record<string, Guest[]>)
+
+  // Enrich invitations with their guests
+  return invitations.map((invitation) => ({
+    ...invitation,
+    guests: guestsByInvitation[invitation.id] || [],
+  }))
+}
+
 export async function getInvitation(id: string): Promise<Invitation> {
   return fetchAPI<Invitation>(`/api/v1/invitations/${id}`)
 }

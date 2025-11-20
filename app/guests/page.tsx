@@ -1,13 +1,13 @@
-import { getInvitations } from "@/lib/api"
+import { getInvitationsWithGuests } from "@/lib/api"
 import { GuestTable } from "@/components/guest-table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Filter, Download } from "lucide-react"
 
 export default async function GuestsPage() {
-  const invitations = await getInvitations()
+  const invitations = await getInvitationsWithGuests()
   // Flatten invitations to get all guests
-  const guests = invitations.flatMap((inv) => inv.guests)
+  const guests = invitations.flatMap((inv) => inv.guests || [])
 
   return (
     <div className="space-y-8">
