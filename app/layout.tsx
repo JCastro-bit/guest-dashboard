@@ -5,6 +5,8 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { SearchProvider } from "@/components/search-provider"
+import { SidebarProvider } from "@/components/sidebar-provider"
+import { MainContent } from "@/components/main-content"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -88,12 +90,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased bg-slate-50/50`}>
-        <Navigation />
-        <main className="md:pl-72 min-h-screen">
-          <div className="p-4 md:p-8 max-w-7xl mx-auto">{children}</div>
-        </main>
-        <SearchProvider />
-        <Analytics />
+        <SidebarProvider>
+          <Navigation />
+          <MainContent>{children}</MainContent>
+          <SearchProvider />
+          <Analytics />
+        </SidebarProvider>
       </body>
     </html>
   )
