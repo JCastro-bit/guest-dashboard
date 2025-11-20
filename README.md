@@ -2,6 +2,13 @@
 
 Dashboard para gestión de invitados y confirmaciones de boda.
 
+## Backend API
+
+Este frontend se conecta con el backend API disponible en:
+**[https://github.com/JCastro-bit/guests-api](https://github.com/JCastro-bit/guests-api)**
+
+El backend debe estar corriendo en `http://localhost:3000` para que el frontend funcione correctamente.
+
 ## Características
 
 - Gestión de invitados y invitaciones
@@ -25,16 +32,32 @@ Dashboard para gestión de invitados y confirmaciones de boda.
 - Node.js (versión recomendada: 18 o superior)
 - npm
 - **Backend API corriendo en `http://localhost:3000`**
+  - Clona el repositorio del backend: [https://github.com/JCastro-bit/guests-api](https://github.com/JCastro-bit/guests-api)
+  - Sigue las instrucciones de instalación del backend
+  - Asegúrate de que esté corriendo en el puerto 3000
 
 ## Configuración
 
-### 1. Instalar dependencias
+### 1. Configurar el Backend
+
+Antes de iniciar el frontend, asegúrate de tener el backend corriendo:
+
+```bash
+# En otro terminal, clona y configura el backend
+git clone https://github.com/JCastro-bit/guests-api.git
+cd guests-api
+# Sigue las instrucciones de instalación del README del backend
+npm install
+npm run dev # o el comando correspondiente para iniciar el backend
+```
+
+### 2. Instalar dependencias del Frontend
 
 ```bash
 npm install
 ```
 
-### 2. Configurar variables de entorno
+### 3. Configurar variables de entorno
 
 El archivo `.env.local` ya está configurado para desarrollo local:
 
@@ -43,10 +66,6 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
 
 Si tu backend corre en un puerto diferente, actualiza este valor.
-
-### 3. Asegúrate de que el backend esté corriendo
-
-El frontend necesita que el backend API esté disponible en `http://localhost:3000` para funcionar correctamente.
 
 ## Scripts Disponibles
 
