@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Mail, Users, Menu, Settings, LogOut, Search, ChevronLeft, ChevronRight } from "lucide-react"
+import { LayoutDashboard, Mail, Users, Menu, Settings, LogOut, Search, ChevronLeft, ChevronRight, Utensils } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useSidebar } from "@/components/sidebar-provider"
@@ -27,6 +27,12 @@ const routes = [
     icon: Users,
     href: "/guests",
     color: "text-pink-700",
+  },
+  {
+    label: "Tables",
+    icon: Utensils,
+    href: "/tables",
+    color: "text-amber-600",
   },
 ]
 
