@@ -40,12 +40,10 @@ export function InvitationCard({ invitation }: InvitationCardProps) {
               <span>{invitation.location}</span>
             </div>
           )}
-          {invitation.table && (
-            <div className="flex items-center gap-2">
-              <Users className="h-3.5 w-3.5" />
-              <span>Table {invitation.table.name}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <Users className="h-3.5 w-3.5" />
+            <span>{invitation.table ? `Table ${invitation.table.name}` : "Sin asignar"}</span>
+          </div>
         </div>
       </CardContent>
       <CardFooter>

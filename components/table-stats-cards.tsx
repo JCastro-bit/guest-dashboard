@@ -7,40 +7,38 @@ interface TableStatsCardsProps {
 }
 
 export function TableStatsCards({ stats }: TableStatsCardsProps) {
-  // Default values if stats or summary is undefined
-  const summary = stats?.summary || {
-    totalTables: 0,
-    totalCapacity: 0,
-    totalGuests: 0,
-    totalAvailable: 0,
-    unassignedGuests: 0,
-  }
+  // Default values if stats is undefined
+  const totalTables = stats?.totalTables || 0
+  const totalCapacity = stats?.totalCapacity || 0
+  const totalOccupied = stats?.totalOccupied || 0
+  const totalAvailable = stats?.totalAvailable || 0
+  const unassignedGuests = stats?.unassignedGuests || 0
 
   const statsConfig = [
     {
       title: "Total Tables",
-      value: summary.totalTables,
+      value: totalTables,
       icon: Utensils,
       color: "text-blue-600",
       bgColor: "bg-blue-100",
     },
     {
       title: "Total Capacity",
-      value: summary.totalCapacity,
+      value: totalCapacity,
       icon: Users,
       color: "text-purple-600",
       bgColor: "bg-purple-100",
     },
     {
       title: "Assigned Guests",
-      value: summary.totalGuests,
+      value: totalOccupied,
       icon: CheckCircle,
       color: "text-green-600",
       bgColor: "bg-green-100",
     },
     {
       title: "Unassigned Guests",
-      value: summary.unassignedGuests,
+      value: unassignedGuests,
       icon: UserX,
       color: "text-orange-600",
       bgColor: "bg-orange-100",
