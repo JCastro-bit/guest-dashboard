@@ -109,14 +109,11 @@ export interface TableStats {
 }
 
 export interface GlobalTableStats {
-  tables: TableStats[]
-  summary: {
-    totalTables: number
-    totalCapacity: number
-    totalGuests: number
-    totalAvailable: number
-    unassignedGuests: number
-  }
+  totalTables: number
+  totalCapacity: number
+  totalOccupied: number
+  totalAvailable: number
+  unassignedGuests?: number
 }
 
 export interface CreateTableRequest {
