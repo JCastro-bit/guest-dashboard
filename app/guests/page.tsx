@@ -1,9 +1,25 @@
 import { getInvitationsWithGuests } from "@/lib/api"
 import { GuestTable } from "@/components/guest-table"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Search, Filter } from "lucide-react"
+import { Filter } from "lucide-react"
 import { ExportGuestsButton } from "@/components/export-guests-button"
+import type { Metadata } from "next"
+import { SearchButton } from "@/components/search-button"
+
+export const metadata: Metadata = {
+  title: "Guest List",
+  description: "View and manage your complete wedding guest list. Search, filter, and export guest information. Track attendance status and contact details.",
+  openGraph: {
+    title: "Guest List | Guest Dashboard",
+    description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
+    url: "/guests",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guest List | Guest Dashboard",
+    description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
+  },
+}
 
 export default async function GuestsPage() {
   const invitations = await getInvitationsWithGuests()
@@ -18,10 +34,7 @@ export default async function GuestsPage() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-lg shadow-sm border">
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search guests..." className="pl-8" />
-        </div>
+        <SearchButton variant="prominent" className="w-full sm:max-w-md" />
         <div className="flex gap-2 w-full sm:w-auto">
           <Button variant="outline" size="sm" className="w-full sm:w-auto bg-transparent">
             <Filter className="mr-2 h-4 w-4" />

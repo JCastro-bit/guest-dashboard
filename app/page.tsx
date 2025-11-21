@@ -1,10 +1,28 @@
 import { getStats, getInvitationsWithGuests } from "@/lib/api"
 import { StatCard } from "@/components/stat-card"
 import { InvitationCard } from "@/components/invitation-card"
+import { GuestMessages } from "@/components/guest-messages"
 import { Users, CheckCircle, Clock, XCircle } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import type { Metadata } from "next"
+import { SearchButton } from "@/components/search-button"
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "View your wedding guest statistics, track RSVPs, and manage recent invitations. Get a complete overview of your wedding planning progress.",
+  openGraph: {
+    title: "Dashboard | Guest Dashboard",
+    description: "View your wedding guest statistics, track RSVPs, and manage recent invitations.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dashboard | Guest Dashboard",
+    description: "View your wedding guest statistics, track RSVPs, and manage recent invitations.",
+  },
+}
 
 export default async function DashboardPage() {
   const stats = await getStats()
@@ -13,14 +31,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-3xl font-serif font-bold tracking-tight">Dashboard</h2>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
+          <SearchButton variant="prominent" className="hidden sm:flex" />
           <Button asChild>
             <Link href="/invitations">Manage Invitations</Link>
           </Button>
         </div>
       </div>
+
+      <SearchButton variant="prominent" className="sm:hidden" />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard title="Total Guests" value={stats.totalGuests} icon={Users} description="Across all invitations" />
@@ -60,6 +81,8 @@ export default async function DashboardPage() {
           ))}
         </div>
       </div>
+
+      <GuestMessages invitations={invitations} />
     </div>
   )
 }

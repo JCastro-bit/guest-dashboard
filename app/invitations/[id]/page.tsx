@@ -8,11 +8,58 @@ import Link from "next/link"
 import { format } from "date-fns"
 import { notFound } from "next/navigation"
 import { getInvitationStatus, getGuestCount } from "@/lib/utils"
+import type { Metadata } from "next"
+import { InvitationQRCode } from "@/components/invitation-qr-code"
 
 interface InvitationDetailsPageProps {
   params: Promise<{
     id: string
   }>
+}
+
+export async function generateMetadata({ params }: InvitationDetailsPageProps): Promise<Metadata> {
+  const { id } = await params
+
+  try {
+    const [invitation, guests] = await Promise.all([
+      getInvitation(id),
+      getGuests(id),
+    ])
+
+    const invitationWithGuests = {
+      ...invitation,
+      guests,
+    }
+
+    const guestCount = getGuestCount(invitationWithGuests)
+    const eventDate = invitation.eventDate
+      ? format(new Date(invitation.eventDate), "MMMM d, yyyy")
+      : "Date TBD"
+
+    const description = invitation.eventDate && invitation.location
+      ? `Wedding invitation for ${invitation.name}. ${guestCount} guest${guestCount !== 1 ? 's' : ''} invited. Event on ${eventDate} at ${invitation.location}.`
+      : `Wedding invitation for ${invitation.name}. ${guestCount} guest${guestCount !== 1 ? 's' : ''} invited.`
+
+    return {
+      title: invitation.name,
+      description,
+      openGraph: {
+        title: `${invitation.name} | Guest Dashboard`,
+        description,
+        url: `/invitations/${id}`,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${invitation.name} | Guest Dashboard`,
+        description,
+      },
+    }
+  } catch (error) {
+    return {
+      title: "Invitation Not Found",
+      description: "The requested invitation could not be found.",
+    }
+  }
 }
 
 export default async function InvitationDetailsPage({ params }: InvitationDetailsPageProps) {
@@ -55,8 +102,12 @@ export default async function InvitationDetailsPage({ params }: InvitationDetail
           <StatusBadge status={status} />
         </div>
 
-        {/* Invitation Details Card */}
-        <Card>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Invitation Details Card */}
+            <Card>
           <CardHeader>
             <CardTitle>Invitation Details</CardTitle>
           </CardHeader>
@@ -133,23 +184,30 @@ export default async function InvitationDetailsPage({ params }: InvitationDetail
               </div>
             )}
           </CardContent>
-        </Card>
+            </Card>
 
-        {/* Guests Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Guests ({guestCount})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {allGuests.length > 0 ? (
-              <GuestTable guests={allGuests} />
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                No guests added to this invitation yet.
-              </div>
-            )}
-          </CardContent>
-        </Card>
+            {/* Guests Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Guests ({guestCount})</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {allGuests.length > 0 ? (
+                  <GuestTable guests={allGuests} />
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No guests added to this invitation yet.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - QR Code */}
+          <div className="lg:col-span-1">
+            <InvitationQRCode invitationId={id} invitationName={invitation.name} />
+          </div>
+        </div>
       </div>
     )
   } catch (error) {
