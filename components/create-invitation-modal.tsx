@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,9 +15,31 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { getTables } from "@/lib/api"
+import type { Table } from "@/lib/types"
 
 export function CreateInvitationModal() {
   const [open, setOpen] = useState(false)
+  const [tables, setTables] = useState<Table[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (open) {
+      loadTables()
+    }
+  }, [open])
+
+  const loadTables = async () => {
+    try {
+      setLoading(true)
+      const data = await getTables()
+      setTables(data)
+    } catch (error) {
+      console.error("Failed to load tables:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -39,6 +61,24 @@ export function CreateInvitationModal() {
               Name
             </Label>
             <Input id="name" placeholder="e.g. The Smith Family" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="table" className="text-right">
+              Table
+            </Label>
+            <Select>
+              <SelectTrigger className="col-span-3" disabled={loading}>
+                <SelectValue placeholder={loading ? "Loading tables..." : "Select a table"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="unassigned">Sin asignar</SelectItem>
+                {tables.map((table) => (
+                  <SelectItem key={table.id} value={table.id}>
+                    {table.name} ({table.capacity} seats)
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="max-guests" className="text-right">

@@ -18,7 +18,6 @@ export interface Guest {
 export interface Invitation {
   id: string
   name: string
-  tableNumber: string | null
   tableId: string | null
   message: string | null
   eventDate: string | null
@@ -55,7 +54,7 @@ export interface PaginatedResponse<T> {
 
 export interface CreateInvitationRequest {
   name: string
-  tableNumber?: string | null
+  tableId?: string | null
   message?: string | null
   eventDate?: string | null
   location?: string | null
