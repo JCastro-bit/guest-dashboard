@@ -3,11 +3,18 @@ import { Users, Utensils, CheckCircle, UserX } from "lucide-react"
 import type { GlobalTableStats } from "@/lib/types"
 
 interface TableStatsCardsProps {
-  stats: GlobalTableStats
+  stats: GlobalTableStats | null
 }
 
 export function TableStatsCards({ stats }: TableStatsCardsProps) {
-  const { summary } = stats
+  // Default values if stats or summary is undefined
+  const summary = stats?.summary || {
+    totalTables: 0,
+    totalCapacity: 0,
+    totalGuests: 0,
+    totalAvailable: 0,
+    unassignedGuests: 0,
+  }
 
   const statsConfig = [
     {

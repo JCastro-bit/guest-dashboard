@@ -3,6 +3,7 @@ import { CreateTableModal } from "@/components/create-table-modal"
 import type { Metadata } from "next"
 import { TablesContainer } from "@/components/tables-container"
 import { TableStatsCards } from "@/components/table-stats-cards"
+import type { Table } from "@/lib/types"
 
 export const metadata: Metadata = {
   title: "Tables",
@@ -20,10 +21,31 @@ export const metadata: Metadata = {
 }
 
 export default async function TablesPage() {
-  const [tables, stats] = await Promise.all([
-    getTables(),
-    getTableStats()
-  ])
+  let tables: Table[] = []
+  let stats = null
+
+  try {
+    const results = await Promise.allSettled([
+      getTables(),
+      getTableStats()
+    ])
+
+    // Handle tables result
+    if (results[0].status === 'fulfilled') {
+      tables = results[0].value
+    } else {
+      console.error('Failed to fetch tables:', results[0].reason)
+    }
+
+    // Handle stats result
+    if (results[1].status === 'fulfilled') {
+      stats = results[1].value
+    } else {
+      console.error('Failed to fetch table stats:', results[1].reason)
+    }
+  } catch (error) {
+    console.error('Error loading tables page:', error)
+  }
 
   return (
     <div className="space-y-8">
