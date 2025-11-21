@@ -52,9 +52,9 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
                     <span>{invitation.name}</span>
-                    {invitation.tableNumber && (
+                    {invitation.table && (
                       <span className="text-xs text-muted-foreground">
-                        Table {invitation.tableNumber}
+                        Table {invitation.table.name}
                       </span>
                     )}
                   </div>

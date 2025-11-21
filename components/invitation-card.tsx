@@ -40,10 +40,10 @@ export function InvitationCard({ invitation }: InvitationCardProps) {
               <span>{invitation.location}</span>
             </div>
           )}
-          {invitation.tableNumber && (
+          {invitation.table && (
             <div className="flex items-center gap-2">
               <Users className="h-3.5 w-3.5" />
-              <span>Table {invitation.tableNumber}</span>
+              <span>Table {invitation.table.name}</span>
             </div>
           )}
         </div>

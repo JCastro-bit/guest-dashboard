@@ -137,13 +137,13 @@ export default async function InvitationDetailsPage({ params }: InvitationDetail
                 </div>
               )}
 
-              {/* Table Number */}
-              {invitation.tableNumber && (
+              {/* Table Assignment */}
+              {invitation.table && (
                 <div className="flex items-start gap-3">
                   <Users className="h-5 w-5 text-muted-foreground mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium">Table Number</p>
-                    <p className="text-sm text-muted-foreground">{invitation.tableNumber}</p>
+                    <p className="text-sm font-medium">Table Assignment</p>
+                    <p className="text-sm text-muted-foreground">{invitation.table.name}</p>
                   </div>
                 </div>
               )}
