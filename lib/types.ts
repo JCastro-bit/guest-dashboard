@@ -19,6 +19,7 @@ export interface Invitation {
   id: string
   name: string
   tableNumber: string | null
+  tableId: string | null
   message: string | null
   eventDate: string | null
   location: string | null
@@ -26,6 +27,7 @@ export interface Invitation {
   operationId: string | null
   createdAt: string
   guests?: Guest[]
+  table?: Table | null
 }
 
 export interface DashboardStats {
@@ -81,4 +83,53 @@ export interface CreateGuestRequest {
   status?: RSVPStatus
   invitationId?: string | null
   operationId?: string | null
+}
+
+// Table types
+export interface Table {
+  id: string
+  name: string
+  capacity: number
+  location: string | null
+  notes: string | null
+  createdAt: string
+  invitations?: Invitation[]
+  // Stats fields (from list endpoint)
+  guestCount?: number
+  available?: number
+  invitationsCount?: number
+}
+
+export interface TableStats {
+  id: string
+  name: string
+  capacity: number
+  guestCount: number
+  available: number
+  invitationsCount: number
+}
+
+export interface GlobalTableStats {
+  tables: TableStats[]
+  summary: {
+    totalTables: number
+    totalCapacity: number
+    totalGuests: number
+    totalAvailable: number
+    unassignedGuests: number
+  }
+}
+
+export interface CreateTableRequest {
+  name: string
+  capacity?: number
+  location?: string | null
+  notes?: string | null
+}
+
+export interface UpdateTableRequest {
+  name?: string
+  capacity?: number
+  location?: string | null
+  notes?: string | null
 }

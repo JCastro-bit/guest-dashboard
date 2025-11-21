@@ -5,7 +5,11 @@ import type {
   PaginatedResponse,
   CreateInvitationRequest,
   CreateInvitationWithGuestsRequest,
-  CreateGuestRequest
+  CreateGuestRequest,
+  Table,
+  GlobalTableStats,
+  CreateTableRequest,
+  UpdateTableRequest
 } from "./types"
 
 // Get API URL from environment variable
@@ -195,6 +199,45 @@ export async function getStats(): Promise<DashboardStats> {
     declinedGuests: stats.declined,
     pendingGuests: stats.pending,
   }
+}
+
+// ==================== Tables API ====================
+
+export async function getTables(): Promise<Table[]> {
+  return fetchAPI<Table[]>("/api/v1/tables")
+}
+
+export async function getTable(id: string): Promise<Table> {
+  return fetchAPI<Table>(`/api/v1/tables/${id}`)
+}
+
+export async function createTable(data: CreateTableRequest): Promise<Table> {
+  return fetchAPI<Table>("/api/v1/tables", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateTable(
+  id: string,
+  data: UpdateTableRequest
+): Promise<Table> {
+  return fetchAPI<Table>(`/api/v1/tables/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteTable(id: string): Promise<void> {
+  return fetchAPI<void>(`/api/v1/tables/${id}`, {
+    method: "DELETE",
+  })
+}
+
+export async function getTableStats(): Promise<GlobalTableStats> {
+  const result = await fetchAPI<GlobalTableStats>("/api/v1/stats/tables")
+  console.log('Table stats response:', JSON.stringify(result, null, 2))
+  return result
 }
 
 // ==================== Health Check ====================
