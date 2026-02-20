@@ -60,3 +60,14 @@ public/       — Static assets
 - Dark mode vía `next-themes` con `ThemeProvider` en layout
 - API client en `lib/api.ts` con `NEXT_PUBLIC_API_URL`
 - Tipos TypeScript en `lib/types.ts`
+
+## Docker / Deploy (Dokploy)
+- **Dockerfile:** Multi-stage (deps → builder → runner), standalone output
+- **Base image:** node:20-alpine
+- **Container port:** 3000
+- **Build arg:** `NEXT_PUBLIC_API_URL=https://api.lovepostal.studio`
+- **NEXT_PUBLIC_* vars** se resuelven en BUILD TIME (cambiar requiere rebuild)
+- **Dominio:** app.lovepostal.studio (Traefik + Let's Encrypt)
+- **Dokploy config:** Build Type = Dockerfile, Container Port = 3000, HTTPS enabled
+- **Build local:** `docker build --build-arg NEXT_PUBLIC_API_URL=https://api.lovepostal.studio -t guest-dashboard .`
+- **Run local:** `docker run -p 3000:3000 guest-dashboard`
