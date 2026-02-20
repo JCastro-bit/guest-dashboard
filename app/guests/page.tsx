@@ -7,17 +7,17 @@ import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
 
 export const metadata: Metadata = {
-  title: "Guest List",
-  description: "View and manage your complete wedding guest list. Search, filter, and export guest information. Track attendance status and contact details.",
+  title: "Lista de Invitados",
+  description: "Ve y gestiona tu lista completa de invitados de boda. Busca, filtra y exporta información de invitados. Rastrea el estado de asistencia y datos de contacto.",
   openGraph: {
     title: "Lista de Invitados | LOVEPOSTAL",
-    description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
+    description: "Ve y gestiona tu lista completa de invitados de boda. Busca, filtra y exporta información de invitados.",
     url: "/guests",
   },
   twitter: {
     card: "summary_large_image",
     title: "Lista de Invitados | LOVEPOSTAL",
-    description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
+    description: "Ve y gestiona tu lista completa de invitados de boda. Busca, filtra y exporta información de invitados.",
   },
 }
 
@@ -29,7 +29,7 @@ export default async function GuestsPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 className="text-3xl font-serif font-bold tracking-tight">Guest List</h2>
+        <h2 className="text-3xl font-serif font-bold tracking-tight">Lista de Invitados</h2>
         <ExportGuestsButton guests={guests} />
       </div>
 
@@ -38,7 +38,7 @@ export default async function GuestsPage() {
         <div className="flex gap-2 w-full sm:w-auto">
           <Button variant="outline" size="sm" className="w-full sm:w-auto bg-transparent">
             <Filter className="mr-2 h-4 w-4" />
-            Filter
+            Filtrar
           </Button>
         </div>
       </div>

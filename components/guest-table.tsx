@@ -25,11 +25,11 @@ export function GuestTable({ guests }: GuestTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Side</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Contact</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Lado</TableHead>
+            <TableHead>Estado</TableHead>
+            <TableHead>Contacto</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -71,11 +71,11 @@ export function GuestTable({ guests }: GuestTableProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit guest</DropdownMenuItem>
-                    <DropdownMenuItem>View invitation</DropdownMenuItem>
+                    <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                    <DropdownMenuItem>Editar invitado</DropdownMenuItem>
+                    <DropdownMenuItem>Ver invitación</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">Remove guest</DropdownMenuItem>
+                    <DropdownMenuItem className="text-destructive">Eliminar invitado</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
