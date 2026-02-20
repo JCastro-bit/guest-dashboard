@@ -15,28 +15,28 @@ export function StatusFilterComponent({ status, onStatusChange }: StatusFilterPr
   const filters = [
     {
       value: "all" as const,
-      label: "All",
+      label: "Todos",
       icon: List,
       activeClass: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
       inactiveClass: "text-muted-foreground hover:bg-muted",
     },
     {
       value: "confirmed" as const,
-      label: "Confirmed",
+      label: "Confirmado",
       icon: CheckCircle,
       activeClass: "bg-success/15 text-success hover:bg-success/20",
       inactiveClass: "text-success/70 hover:bg-success/10",
     },
     {
       value: "pending" as const,
-      label: "Pending",
+      label: "Pendiente",
       icon: Clock,
       activeClass: "bg-warning/15 text-warning hover:bg-warning/20",
       inactiveClass: "text-warning/70 hover:bg-warning/10",
     },
     {
       value: "declined" as const,
-      label: "Declined",
+      label: "Rechazado",
       icon: XCircle,
       activeClass: "bg-destructive/15 text-destructive hover:bg-destructive/20",
       inactiveClass: "text-destructive/70 hover:bg-destructive/10",

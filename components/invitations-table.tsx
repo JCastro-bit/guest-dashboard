@@ -30,12 +30,12 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Guests</TableHead>
-            <TableHead>Event Date</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Invitados</TableHead>
+            <TableHead>Fecha del Evento</TableHead>
+            <TableHead>Ubicación</TableHead>
+            <TableHead>Estado</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -54,7 +54,7 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
                     <span>{invitation.name}</span>
                     {invitation.table && (
                       <span className="text-xs text-muted-foreground">
-                        Table {invitation.table.name}
+                        Mesa {invitation.table.name}
                       </span>
                     )}
                   </div>
@@ -74,7 +74,7 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
                       </span>
                     </div>
                   ) : (
-                    <span className="text-sm text-muted-foreground">Not set</span>
+                    <span className="text-sm text-muted-foreground">No establecido</span>
                   )}
                 </TableCell>
                 <TableCell>
@@ -86,7 +86,7 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
                       </span>
                     </div>
                   ) : (
-                    <span className="text-sm text-muted-foreground">Not set</span>
+                    <span className="text-sm text-muted-foreground">No establecido</span>
                   )}
                 </TableCell>
                 <TableCell>
@@ -101,7 +101,7 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation()
@@ -109,20 +109,20 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
                         }}
                       >
                         <Eye className="mr-2 h-4 w-4" />
-                        View details
+                        Ver detalles
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                        Edit invitation
+                        Editar invitación
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
-                        Download QR code
+                        Descargar código QR
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        Delete invitation
+                        Eliminar invitación
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

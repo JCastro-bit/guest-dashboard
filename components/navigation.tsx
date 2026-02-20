@@ -13,7 +13,7 @@ import { useTheme } from "next-themes"
 
 const routes = [
   {
-    label: "Dashboard",
+    label: "Tablero",
     icon: LayoutDashboard,
     href: "/",
   },
@@ -105,7 +105,6 @@ function BrandLogo({ collapsed }: { collapsed: boolean }) {
       width={160}
       height={40}
       className="h-8 w-auto"
-      unoptimized
     />
   )
 }

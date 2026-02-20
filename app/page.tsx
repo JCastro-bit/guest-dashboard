@@ -10,17 +10,17 @@ import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
 
 export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "View your wedding guest statistics, track RSVPs, and manage recent invitations. Get a complete overview of your wedding planning progress.",
+  title: "Tablero",
+  description: "Ve las estadísticas de tus invitados, rastrea las confirmaciones y gestiona las invitaciones recientes. Obtén una visión completa de tu planificación.",
   openGraph: {
-    title: "Dashboard | Guest Dashboard",
-    description: "View your wedding guest statistics, track RSVPs, and manage recent invitations.",
+    title: "Tablero | LOVEPOSTAL",
+    description: "Ve las estadísticas de tus invitados, rastrea las confirmaciones y gestiona las invitaciones recientes.",
     url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dashboard | Guest Dashboard",
-    description: "View your wedding guest statistics, track RSVPs, and manage recent invitations.",
+    title: "Tablero | LOVEPOSTAL",
+    description: "Ve las estadísticas de tus invitados, rastrea las confirmaciones y gestiona las invitaciones recientes.",
   },
 }
 
@@ -32,11 +32,11 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-3xl font-serif font-bold tracking-tight">Dashboard</h2>
+        <h2 className="text-3xl font-serif font-bold tracking-tight">Tablero</h2>
         <div className="flex items-center gap-2">
           <SearchButton variant="prominent" className="hidden sm:flex" />
           <Button asChild>
-            <Link href="/invitations">Manage Invitations</Link>
+            <Link href="/invitations">Gestionar Invitaciones</Link>
           </Button>
         </div>
       </div>
@@ -44,35 +44,35 @@ export default async function DashboardPage() {
       <SearchButton variant="prominent" className="sm:hidden" />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Guests" value={stats.totalGuests} icon={Users} description="Across all invitations" />
+        <StatCard title="Total Invitados" value={stats.totalGuests} icon={Users} description="En todas las invitaciones" />
         <StatCard
-          title="Confirmed"
+          title="Confirmados"
           value={stats.confirmedGuests}
           icon={CheckCircle}
-          description="Guests attending"
+          description="Invitados asistentes"
           className="border-l-4 border-l-success"
         />
         <StatCard
-          title="Pending"
+          title="Pendientes"
           value={stats.pendingGuests}
           icon={Clock}
-          description="Awaiting response"
+          description="En espera de respuesta"
           className="border-l-4 border-l-warning"
         />
         <StatCard
-          title="Declined"
+          title="Rechazados"
           value={stats.declinedGuests}
           icon={XCircle}
-          description="Not attending"
+          description="No asistirán"
           className="border-l-4 border-l-destructive"
         />
       </div>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold tracking-tight">Recent Invitations</h3>
+          <h3 className="text-xl font-semibold tracking-tight">Invitaciones Recientes</h3>
           <Link href="/invitations" className="text-sm text-muted-foreground hover:text-primary flex items-center">
-            View all <ArrowRight className="ml-1 h-4 w-4" />
+            Ver todas <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
