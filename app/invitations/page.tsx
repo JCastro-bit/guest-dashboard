@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   title: "Invitations",
   description: "Manage all your wedding invitations. Create new invitations, track responses, and send personalized messages to your guests.",
   openGraph: {
-    title: "Invitations | Guest Dashboard",
+    title: "Invitaciones | LOVEPOSTAL",
     description: "Manage all your wedding invitations. Create new invitations, track responses, and send personalized messages to your guests.",
     url: "/invitations",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Invitations | Guest Dashboard",
+    title: "Invitaciones | LOVEPOSTAL",
     description: "Manage all your wedding invitations. Create new invitations, track responses, and send personalized messages to your guests.",
   },
 }

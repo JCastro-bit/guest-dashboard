@@ -55,7 +55,7 @@ export function InvitationQRCode({ invitationId, invitationName }: InvitationQRC
       <CardContent className="flex flex-col items-center gap-4">
         <div
           ref={qrRef}
-          className="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm"
+          className="bg-card p-4 rounded-lg border-2 border-border shadow-sm"
         >
           <QRCodeCanvas
             value={qrValue}

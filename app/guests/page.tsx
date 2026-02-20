@@ -10,13 +10,13 @@ export const metadata: Metadata = {
   title: "Guest List",
   description: "View and manage your complete wedding guest list. Search, filter, and export guest information. Track attendance status and contact details.",
   openGraph: {
-    title: "Guest List | Guest Dashboard",
+    title: "Lista de Invitados | LOVEPOSTAL",
     description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
     url: "/guests",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Guest List | Guest Dashboard",
+    title: "Lista de Invitados | LOVEPOSTAL",
     description: "View and manage your complete wedding guest list. Search, filter, and export guest information.",
   },
 }
@@ -33,7 +33,7 @@ export default async function GuestsPage() {
         <ExportGuestsButton guests={guests} />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-lg shadow-sm border">
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-lg shadow-sm border">
         <SearchButton variant="prominent" className="w-full sm:max-w-md" />
         <div className="flex gap-2 w-full sm:w-auto">
           <Button variant="outline" size="sm" className="w-full sm:w-auto bg-transparent">

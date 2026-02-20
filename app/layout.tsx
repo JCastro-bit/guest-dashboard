@@ -1,52 +1,55 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Noto_Sans, Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
 import { SearchProvider } from "@/components/search-provider"
 import { SidebarProvider } from "@/components/sidebar-provider"
 import { MainContent } from "@/components/main-content"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" })
+const playfairDisplay = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" })
 
 export const metadata: Metadata = {
   title: {
-    default: "Guest Dashboard - Wedding Invitation Management",
-    template: "%s | Guest Dashboard",
+    default: "LOVEPOSTAL — Dashboard de Invitados",
+    template: "%s | LOVEPOSTAL",
   },
   description:
-    "Manage your wedding guest list and invitations with ease. Track RSVPs, send personalized invitations, and organize your special day.",
+    "Gestiona tu lista de invitados y confirmaciones de boda con LOVEPOSTAL. Seguimiento de RSVPs, invitaciones personalizadas y organización de tu día especial.",
   keywords: [
-    "wedding",
-    "guest management",
-    "invitations",
+    "boda",
+    "invitaciones digitales",
+    "gestión de invitados",
     "RSVP",
-    "wedding planning",
-    "event management",
+    "planificación de boda",
+    "LOVEPOSTAL",
+    "invitaciones de boda México",
   ],
-  authors: [{ name: "Guest Dashboard" }],
-  creator: "Guest Dashboard",
-  publisher: "Guest Dashboard",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  authors: [{ name: "LOVEPOSTAL" }],
+  creator: "LOVEPOSTAL",
+  publisher: "LOVEPOSTAL",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Guest Dashboard - Wedding Invitation Management",
+    title: "LOVEPOSTAL — Dashboard de Invitados",
     description:
-      "Manage your wedding guest list and invitations with ease. Track RSVPs, send personalized invitations, and organize your special day.",
+      "Gestiona tu lista de invitados y confirmaciones de boda con LOVEPOSTAL. Seguimiento de RSVPs, invitaciones personalizadas y organización de tu día especial.",
     url: "/",
-    siteName: "Guest Dashboard",
-    locale: "en_US",
+    siteName: "LOVEPOSTAL",
+    locale: "es_MX",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Guest Dashboard - Wedding Invitation Management",
+    title: "LOVEPOSTAL — Dashboard de Invitados",
     description:
-      "Manage your wedding guest list and invitations with ease. Track RSVPs, send personalized invitations, and organize your special day.",
+      "Gestiona tu lista de invitados y confirmaciones de boda con LOVEPOSTAL. Seguimiento de RSVPs, invitaciones personalizadas y organización de tu día especial.",
   },
   robots: {
     index: true,
@@ -76,10 +79,6 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
-  verification: {
-    google: "google-site-verification-code",
-    yandex: "yandex-verification-code",
-  },
 }
 
 export default function RootLayout({
@@ -88,14 +87,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans antialiased bg-slate-50/50`}>
-        <SidebarProvider>
-          <Navigation />
-          <MainContent>{children}</MainContent>
-          <SearchProvider />
-          <Analytics />
-        </SidebarProvider>
+    <html lang="es" suppressHydrationWarning>
+      <body className={`${notoSans.variable} ${playfairDisplay.variable} font-sans antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <SidebarProvider>
+            <Navigation />
+            <MainContent>{children}</MainContent>
+            <SearchProvider />
+            <Toaster />
+            <Analytics />
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

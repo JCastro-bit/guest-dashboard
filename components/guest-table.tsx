@@ -21,7 +21,7 @@ interface GuestTableProps {
 
 export function GuestTable({ guests }: GuestTableProps) {
   return (
-    <div className="rounded-md border bg-white">
+    <div className="rounded-md border bg-card">
       <Table>
         <TableHeader>
           <TableRow>
@@ -75,7 +75,7 @@ export function GuestTable({ guests }: GuestTableProps) {
                     <DropdownMenuItem>Edit guest</DropdownMenuItem>
                     <DropdownMenuItem>View invitation</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-600">Remove guest</DropdownMenuItem>
+                    <DropdownMenuItem className="text-destructive">Remove guest</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>

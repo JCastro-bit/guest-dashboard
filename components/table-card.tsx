@@ -32,12 +32,12 @@ export function TableCard({ table }: TableCardProps) {
             Full
           </Badge>
         ) : isNearCapacity ? (
-          <Badge variant="outline" className="border-orange-500 text-orange-600 gap-1">
+          <Badge variant="outline" className="border-warning text-warning gap-1">
             <AlertCircle className="h-3 w-3" />
             {available} left
           </Badge>
         ) : (
-          <Badge variant="outline" className="border-green-500 text-green-600">
+          <Badge variant="outline" className="border-success text-success">
             {available} available
           </Badge>
         )}

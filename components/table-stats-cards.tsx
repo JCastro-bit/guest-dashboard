@@ -11,37 +11,36 @@ export function TableStatsCards({ stats }: TableStatsCardsProps) {
   const totalTables = stats?.totalTables || 0
   const totalCapacity = stats?.totalCapacity || 0
   const totalOccupied = stats?.totalOccupied || 0
-  const totalAvailable = stats?.totalAvailable || 0
   const unassignedGuests = stats?.unassignedGuests || 0
 
   const statsConfig = [
     {
-      title: "Total Tables",
+      title: "Total Mesas",
       value: totalTables,
       icon: Utensils,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
+      color: "text-info",
+      bgColor: "bg-info/10",
     },
     {
-      title: "Total Capacity",
+      title: "Capacidad Total",
       value: totalCapacity,
       icon: Users,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
     {
-      title: "Assigned Guests",
+      title: "Invitados Asignados",
       value: totalOccupied,
       icon: CheckCircle,
-      color: "text-green-600",
-      bgColor: "bg-green-100",
+      color: "text-success",
+      bgColor: "bg-success/10",
     },
     {
-      title: "Unassigned Guests",
+      title: "Sin Asignar",
       value: unassignedGuests,
       icon: UserX,
-      color: "text-orange-600",
-      bgColor: "bg-orange-100",
+      color: "text-warning",
+      bgColor: "bg-warning/10",
     },
   ]
 

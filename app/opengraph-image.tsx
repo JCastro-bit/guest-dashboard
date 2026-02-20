@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og"
 
 // Image metadata
-export const alt = "Guest Dashboard - Wedding Invitation Management"
+export const alt = "LOVEPOSTAL — Dashboard de Invitados"
 export const size = {
   width: 1200,
   height: 630,
@@ -16,7 +16,7 @@ export default async function Image() {
       <div
         style={{
           fontSize: 64,
-          background: "linear-gradient(to bottom right, #f1f5f9, #e2e8f0)",
+          background: "linear-gradient(to bottom right, #FDFAF6, #F5E6D3)",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -39,33 +39,30 @@ export default async function Image() {
             style={{
               fontSize: 72,
               fontWeight: "bold",
-              background: "linear-gradient(90deg, #1e293b 0%, #334155 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              color: "transparent",
+              color: "#D4714E",
               marginBottom: 20,
             }}
           >
-            Guest Dashboard
+            LOVEPOSTAL
           </div>
           <div
             style={{
               fontSize: 36,
-              color: "#64748b",
+              color: "#2D1B0E",
               marginBottom: 40,
             }}
           >
-            Wedding Invitation Management
+            Dashboard de Invitados
           </div>
           <div
             style={{
               fontSize: 28,
-              color: "#94a3b8",
+              color: "rgba(45, 27, 14, 0.6)",
               maxWidth: 900,
               lineHeight: 1.4,
             }}
           >
-            Manage your wedding guest list and invitations with ease. Track RSVPs, send personalized invitations, and organize your special day.
+            Gestiona tu lista de invitados y confirmaciones de boda. Seguimiento de RSVPs, invitaciones personalizadas y organización de tu día especial.
           </div>
         </div>
       </div>

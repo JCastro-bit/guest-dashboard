@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -8,31 +9,28 @@ import { LayoutDashboard, Mail, Users, Menu, Settings, LogOut, Search, ChevronLe
 import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useSidebar } from "@/components/sidebar-provider"
+import { useTheme } from "next-themes"
 
 const routes = [
   {
     label: "Dashboard",
     icon: LayoutDashboard,
     href: "/",
-    color: "text-sky-500",
   },
   {
-    label: "Invitations",
+    label: "Invitaciones",
     icon: Mail,
     href: "/invitations",
-    color: "text-violet-500",
   },
   {
-    label: "Guests",
+    label: "Invitados",
     icon: Users,
     href: "/guests",
-    color: "text-pink-700",
   },
   {
-    label: "Tables",
+    label: "Mesas",
     icon: Utensils,
     href: "/tables",
-    color: "text-amber-600",
   },
 ]
 
@@ -49,7 +47,9 @@ export function Navigation() {
     <>
       {/* Mobile Navigation */}
       <div className="md:hidden flex items-center justify-between p-4 border-b bg-background">
-        <div className="font-serif text-xl font-bold">Wedding Admin</div>
+        <Link href="/">
+          <BrandLogo collapsed={false} />
+        </Link>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={handleSearchClick}>
             <Search className="h-5 w-5" />
@@ -78,6 +78,38 @@ export function Navigation() {
   )
 }
 
+function BrandLogo({ collapsed }: { collapsed: boolean }) {
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (collapsed) {
+    return <span className="font-serif font-bold text-lg text-primary">LP</span>
+  }
+
+  if (!mounted) {
+    return <span className="font-serif font-bold text-2xl text-primary">LOVEPOSTAL</span>
+  }
+
+  const logoSrc = resolvedTheme === "dark"
+    ? "https://cdn.lovepostal.studio/logotipos/logo_lovepostal_4.webp"
+    : "https://cdn.lovepostal.studio/logotipos/logo_lovepostal_6.webp"
+
+  return (
+    <Image
+      src={logoSrc}
+      alt="LOVEPOSTAL"
+      width={160}
+      height={40}
+      className="h-8 w-auto"
+      unoptimized
+    />
+  )
+}
+
 function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: string; onNavigate?: () => void; isCollapsed: boolean }) {
   const [isMac, setIsMac] = useState(false)
   const { toggleSidebar } = useSidebar()
@@ -96,9 +128,7 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
       <div className="px-3 py-2">
         <div className="flex items-center justify-between mb-8">
           <Link href="/" className={cn("flex items-center", isCollapsed ? "px-1" : "pl-3")} onClick={onNavigate}>
-            <h1 className={cn("font-serif font-bold transition-all", isCollapsed ? "text-lg" : "text-2xl")}>
-              {isCollapsed ? "W" : <><span>Wedding</span><span className="text-[#DC325A]">.</span></>}
-            </h1>
+            <BrandLogo collapsed={isCollapsed} />
           </Link>
           {!onNavigate && (
             <Button
@@ -119,10 +149,10 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
           >
             <div className="flex items-center">
               <Search className="h-4 w-4 mr-2" />
-              <span>Search...</span>
+              <span>Buscar...</span>
             </div>
             <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground opacity-100">
-              <span className="text-xs">{isMac ? "⌘" : "Ctrl"}</span>K
+              <span className="text-xs">{isMac ? "\u2318" : "Ctrl"}</span>K
             </kbd>
           </button>
         )}
@@ -133,7 +163,7 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
             size="icon"
             onClick={handleSearchClick}
             className="w-full mb-6 h-10 text-muted-foreground"
-            title="Search (Ctrl+K)"
+            title="Buscar (Ctrl+K)"
           >
             <Search className="h-5 w-5" />
           </Button>
@@ -153,7 +183,7 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
               title={isCollapsed ? route.label : undefined}
             >
               <div className={cn("flex items-center", isCollapsed ? "" : "flex-1")}>
-                <route.icon className={cn("h-5 w-5", isCollapsed ? "" : "mr-3", route.color)} />
+                <route.icon className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")} />
                 {!isCollapsed && route.label}
               </div>
             </Link>
@@ -171,18 +201,18 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
             title={isCollapsed ? "Settings" : undefined}
           >
             <Settings className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")} />
-            {!isCollapsed && "Settings"}
+            {!isCollapsed && "Configuración"}
           </Button>
           <Button
             variant="ghost"
             className={cn(
-              "w-full text-muted-foreground hover:text-red-500 hover:bg-red-50",
+              "w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10",
               isCollapsed ? "justify-center px-2" : "justify-start"
             )}
             title={isCollapsed ? "Logout" : undefined}
           >
             <LogOut className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")} />
-            {!isCollapsed && "Logout"}
+            {!isCollapsed && "Cerrar sesión"}
           </Button>
         </div>
       </div>

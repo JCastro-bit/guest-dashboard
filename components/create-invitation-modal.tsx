@@ -44,8 +44,8 @@ export function CreateInvitationModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#DC325A] hover:bg-[#DC325A]/90 text-white">
-          <Plus className="mr-2 h-4 w-4" /> Create Invitation
+        <Button>
+          <Plus className="mr-2 h-4 w-4" /> Crear Invitación
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

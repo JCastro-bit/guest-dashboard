@@ -26,7 +26,7 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
   const router = useRouter()
 
   return (
-    <div className="rounded-md border bg-white">
+    <div className="rounded-md border bg-card">
       <Table>
         <TableHeader>
           <TableRow>
@@ -119,7 +119,7 @@ export function InvitationsTable({ invitations }: InvitationsTableProps) {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        className="text-red-600"
+                        className="text-destructive"
                         onClick={(e) => e.stopPropagation()}
                       >
                         Delete invitation

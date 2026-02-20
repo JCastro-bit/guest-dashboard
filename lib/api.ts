@@ -236,7 +236,6 @@ export async function deleteTable(id: string): Promise<void> {
 
 export async function getTableStats(): Promise<GlobalTableStats> {
   const result = await fetchAPI<GlobalTableStats>("/api/v1/stats/tables")
-  console.log('Table stats response:', JSON.stringify(result, null, 2))
   return result
 }
 

@@ -1,6 +1,6 @@
-# Wedding Guest Dashboard
+# LOVEPOSTAL — Guest Dashboard
 
-Dashboard para gestión de invitados y confirmaciones de boda.
+Dashboard para gestión de invitados y confirmaciones de boda para [LOVEPOSTAL](https://lovepostal.studio).
 
 ## Backend API
 
@@ -11,21 +11,26 @@ El backend debe estar corriendo en `http://localhost:3000` para que el frontend 
 
 ## Características
 
-- Gestión de invitados y invitaciones
+- Gestión de invitados e invitaciones
 - Dashboard con estadísticas en tiempo real
+- Gestión de mesas y asignación de asientos
+- Dark mode con paleta de marca LOVEPOSTAL (terracota/crema)
+- Exportación a Excel, PDF y CSV
 - Interfaz moderna con Next.js 16 y React 19
-- UI components con Radix UI y Tailwind CSS
-- Validación de formularios con React Hook Form y Zod
+- UI components con shadcn/ui + Radix UI + Tailwind CSS v4
+- Tipografía: Playfair Display (títulos) + Noto Sans (body)
+- Iconos: Lucide React
 - **Integración con API Backend** - Se conecta con el backend en `http://localhost:3000`
 
 ## Tecnologías
 
 - **Framework:** Next.js 16
-- **UI:** React 19, Tailwind CSS, Radix UI
-- **Formularios:** React Hook Form, Zod
+- **UI:** React 19, Tailwind CSS v4, shadcn/ui, Radix UI
+- **Animaciones:** Framer Motion
 - **Gráficos:** Recharts
 - **Iconos:** Lucide React
 - **TypeScript:** Soporte completo
+- **Tema:** next-themes (dark/light mode)
 
 ## Requisitos
 
@@ -59,13 +64,18 @@ npm install
 
 ### 3. Configurar variables de entorno
 
-El archivo `.env.local` ya está configurado para desarrollo local:
+Copia el archivo de ejemplo y ajusta si es necesario:
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:3000
+cp .env.example .env.local
 ```
 
-Si tu backend corre en un puerto diferente, actualiza este valor.
+Variables disponibles:
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:3000    # URL del backend API
+NEXT_PUBLIC_APP_URL=http://localhost:3001    # URL de esta app (para metadata/OG)
+```
 
 ## Scripts Disponibles
 
@@ -88,11 +98,12 @@ npm run lint
 ```
 ├── app/                  # App Router de Next.js
 │   ├── guests/          # Página de gestión de invitados
-│   └── invitations/     # Página de invitaciones
+│   ├── invitations/     # Página de invitaciones
+│   └── tables/          # Página de gestión de mesas
 ├── components/          # Componentes React
-│   └── ui/             # Componentes de UI reutilizables
+│   └── ui/             # Componentes shadcn/ui
 ├── hooks/              # Custom hooks
-├── lib/                # Utilidades y tipos
+├── lib/                # API client, tipos, utilidades
 └── public/             # Archivos estáticos
 ```
 
@@ -129,22 +140,26 @@ El frontend consume los siguientes endpoints del backend:
 - `PUT /api/v1/guests/{id}` - Actualizar invitado
 - `DELETE /api/v1/guests/{id}` - Eliminar invitado
 
+### Mesas
+- `GET /api/v1/tables/` - Listar mesas
+- `GET /api/v1/tables/{id}` - Ver detalles de mesa
+- `POST /api/v1/tables/` - Crear mesa
+- `PUT /api/v1/tables/{id}` - Actualizar mesa
+- `DELETE /api/v1/tables/{id}` - Eliminar mesa
+
 ### Estadísticas
-- `GET /api/v1/stats/dashboard` - Obtener estadísticas del dashboard
+- `GET /api/v1/stats/dashboard` - Estadísticas del dashboard
+- `GET /api/v1/stats/tables` - Estadísticas de mesas
 
 ### Health Check
 - `GET /health` - Verificar estado del backend
 
-## Tipos y Schema
+## Guía de Marca
 
-Los tipos TypeScript del frontend están sincronizados con el schema OpenAPI del backend. Ver `lib/types.ts` para más detalles.
+Para lineamientos detallados de marca, colores, tipografía y convenciones de código, consulta [CLAUDE.md](./CLAUDE.md).
 
-## Carga de Datos Enriquecidos
+## Dominio
 
-El endpoint `GET /api/v1/invitations/` del backend no incluye los invitados en la respuesta por razones de rendimiento. Para resolver esto, el frontend implementa la función `getInvitationsWithGuests()` que:
-
-1. Obtiene todas las invitaciones en paralelo con todos los invitados
-2. Agrupa los invitados por `invitationId`
-3. Enriquece cada invitación con su array correspondiente de invitados
-
-Esto permite mostrar correctamente el número de invitados en las tarjetas de invitación sin necesidad de hacer múltiples llamadas al API.
+- **Producción:** app.lovepostal.studio
+- **Sitio principal:** lovepostal.studio
+- **CDN assets:** cdn.lovepostal.studio

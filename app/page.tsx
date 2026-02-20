@@ -50,21 +50,21 @@ export default async function DashboardPage() {
           value={stats.confirmedGuests}
           icon={CheckCircle}
           description="Guests attending"
-          className="border-l-4 border-l-green-500"
+          className="border-l-4 border-l-success"
         />
         <StatCard
           title="Pending"
           value={stats.pendingGuests}
           icon={Clock}
           description="Awaiting response"
-          className="border-l-4 border-l-amber-500"
+          className="border-l-4 border-l-warning"
         />
         <StatCard
           title="Declined"
           value={stats.declinedGuests}
           icon={XCircle}
           description="Not attending"
-          className="border-l-4 border-l-red-500"
+          className="border-l-4 border-l-destructive"
         />
       </div>
 
