@@ -44,37 +44,37 @@ export function CreateInvitationModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#DC325A] hover:bg-[#DC325A]/90 text-white">
-          <Plus className="mr-2 h-4 w-4" /> Create Invitation
+        <Button>
+          <Plus className="mr-2 h-4 w-4" /> Crear Invitación
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create Invitation</DialogTitle>
+          <DialogTitle>Crear Invitación</DialogTitle>
           <DialogDescription>
-            Add a new invitation to your guest list. You can add guests to this invitation later.
+            Añade una nueva invitación a tu lista de invitados. Podrás añadir invitados a esta invitación más adelante.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Name
+              Nombre
             </Label>
-            <Input id="name" placeholder="e.g. The Smith Family" className="col-span-3" />
+            <Input id="name" placeholder="ej. Familia García" className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="table" className="text-right">
-              Table
+              Mesa
             </Label>
             <Select>
               <SelectTrigger className="col-span-3" disabled={loading}>
-                <SelectValue placeholder={loading ? "Loading tables..." : "Select a table"} />
+                <SelectValue placeholder={loading ? "Cargando mesas..." : "Selecciona una mesa"} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="unassigned">Sin asignar</SelectItem>
                 {tables.map((table) => (
                   <SelectItem key={table.id} value={table.id}>
-                    {table.name} ({table.capacity} seats)
+                    {table.name} ({table.capacity} lugares)
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -82,29 +82,29 @@ export function CreateInvitationModal() {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="max-guests" className="text-right">
-              Max Guests
+              Máx. Invitados
             </Label>
             <Input id="max-guests" type="number" defaultValue="2" className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="side" className="text-right">
-              Side
+              Lado
             </Label>
             <Select defaultValue="mutual">
               <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select side" />
+                <SelectValue placeholder="Selecciona lado" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="bride">Bride</SelectItem>
-                <SelectItem value="groom">Groom</SelectItem>
-                <SelectItem value="mutual">Mutual</SelectItem>
+                <SelectItem value="bride">Novia</SelectItem>
+                <SelectItem value="groom">Novio</SelectItem>
+                <SelectItem value="mutual">Mutuo</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
         <DialogFooter>
           <Button type="submit" onClick={() => setOpen(false)}>
-            Create Invitation
+            Crear Invitación
           </Button>
         </DialogFooter>
       </DialogContent>

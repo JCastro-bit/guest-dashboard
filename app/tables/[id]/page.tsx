@@ -82,12 +82,12 @@ export default async function TableDetailsPage({ params }: TableDetailsPageProps
               Full
             </Badge>
           ) : isNearCapacity ? (
-            <Badge variant="outline" className="border-orange-500 text-orange-600 gap-1">
+            <Badge variant="outline" className="border-warning text-warning gap-1">
               <AlertCircle className="h-3 w-3" />
               {available} seats left
             </Badge>
           ) : (
-            <Badge variant="outline" className="border-green-500 text-green-600">
+            <Badge variant="outline" className="border-success text-success">
               {available} seats available
             </Badge>
           )}
@@ -119,7 +119,7 @@ export default async function TableDetailsPage({ params }: TableDetailsPageProps
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${isFull ? 'text-red-600' : isNearCapacity ? 'text-orange-600' : 'text-green-600'}`}>
+              <div className={`text-2xl font-bold ${isFull ? 'text-destructive' : isNearCapacity ? 'text-warning' : 'text-success'}`}>
                 {available}
               </div>
             </CardContent>
@@ -231,14 +231,14 @@ export default async function TableDetailsPage({ params }: TableDetailsPageProps
                         {guestCount}/{table.capacity}
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full bg-muted rounded-full h-2.5">
                       <div
                         className={`h-2.5 rounded-full ${
                           isFull
-                            ? "bg-red-600"
+                            ? "bg-destructive"
                             : isNearCapacity
-                            ? "bg-orange-500"
-                            : "bg-green-600"
+                            ? "bg-warning"
+                            : "bg-success"
                         }`}
                         style={{ width: `${(guestCount / table.capacity) * 100}%` }}
                       ></div>
@@ -255,7 +255,7 @@ export default async function TableDetailsPage({ params }: TableDetailsPageProps
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Available:</span>
-                      <span className={`font-medium ${isFull ? 'text-red-600' : isNearCapacity ? 'text-orange-600' : 'text-green-600'}`}>
+                      <span className={`font-medium ${isFull ? 'text-destructive' : isNearCapacity ? 'text-warning' : 'text-success'}`}>
                         {available}
                       </span>
                     </div>

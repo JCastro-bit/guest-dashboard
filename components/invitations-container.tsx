@@ -30,7 +30,7 @@ export function InvitationsContainer({ invitations }: InvitationsContainerProps)
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-lg shadow-sm border">
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-lg shadow-sm border">
         <SearchButton variant="prominent" className="w-full sm:max-w-md" />
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <StatusFilterComponent status={statusFilter} onStatusChange={setStatusFilter} />

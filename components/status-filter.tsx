@@ -15,31 +15,31 @@ export function StatusFilterComponent({ status, onStatusChange }: StatusFilterPr
   const filters = [
     {
       value: "all" as const,
-      label: "All",
+      label: "Todos",
       icon: List,
-      activeClass: "bg-slate-100 text-slate-900 hover:bg-slate-200",
-      inactiveClass: "text-slate-600 hover:bg-slate-50",
+      activeClass: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      inactiveClass: "text-muted-foreground hover:bg-muted",
     },
     {
       value: "confirmed" as const,
-      label: "Confirmed",
+      label: "Confirmado",
       icon: CheckCircle,
-      activeClass: "bg-green-100 text-green-700 hover:bg-green-200",
-      inactiveClass: "text-green-600 hover:bg-green-50",
+      activeClass: "bg-success/15 text-success hover:bg-success/20",
+      inactiveClass: "text-success/70 hover:bg-success/10",
     },
     {
       value: "pending" as const,
-      label: "Pending",
+      label: "Pendiente",
       icon: Clock,
-      activeClass: "bg-amber-100 text-amber-700 hover:bg-amber-200",
-      inactiveClass: "text-amber-600 hover:bg-amber-50",
+      activeClass: "bg-warning/15 text-warning hover:bg-warning/20",
+      inactiveClass: "text-warning/70 hover:bg-warning/10",
     },
     {
       value: "declined" as const,
-      label: "Declined",
+      label: "Rechazado",
       icon: XCircle,
-      activeClass: "bg-red-100 text-red-700 hover:bg-red-200",
-      inactiveClass: "text-red-600 hover:bg-red-50",
+      activeClass: "bg-destructive/15 text-destructive hover:bg-destructive/20",
+      inactiveClass: "text-destructive/70 hover:bg-destructive/10",
     },
   ]
 

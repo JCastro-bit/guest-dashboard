@@ -15,11 +15,11 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       className={cn(
         "gap-1.5 capitalize",
         status === "confirmed" &&
-          "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-400",
+          "border-success/30 bg-success/10 text-success",
         status === "pending" &&
-          "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-400",
+          "border-warning/30 bg-warning/10 text-warning",
         status === "declined" &&
-          "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-400",
+          "border-destructive/30 bg-destructive/10 text-destructive",
         className,
       )}
     >

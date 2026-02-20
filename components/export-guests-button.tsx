@@ -45,15 +45,15 @@ export function ExportGuestsButton({ guests }: ExportGuestsButtonProps) {
         <DropdownMenuLabel>Export Format</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleExportExcel}>
-          <FileSpreadsheet className="mr-2 h-4 w-4 text-green-600" />
+          <FileSpreadsheet className="mr-2 h-4 w-4 text-success" />
           Export to Excel (.xlsx)
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleExportPDF}>
-          <FileText className="mr-2 h-4 w-4 text-red-600" />
+          <FileText className="mr-2 h-4 w-4 text-destructive" />
           Export to PDF (.pdf)
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleExportCSV}>
-          <Table className="mr-2 h-4 w-4 text-blue-600" />
+          <Table className="mr-2 h-4 w-4 text-info" />
           Export to CSV (.csv)
         </DropdownMenuItem>
       </DropdownMenuContent>

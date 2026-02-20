@@ -23,22 +23,22 @@ export function TableCard({ table }: TableCardProps) {
         <div className="space-y-1">
           <h3 className="font-semibold leading-none tracking-tight">{table.name}</h3>
           <p className="text-sm text-muted-foreground">
-            Capacity: {table.capacity}
+            Capacidad: {table.capacity}
           </p>
         </div>
         {isFull ? (
           <Badge variant="destructive" className="gap-1">
             <AlertCircle className="h-3 w-3" />
-            Full
+            Llena
           </Badge>
         ) : isNearCapacity ? (
-          <Badge variant="outline" className="border-orange-500 text-orange-600 gap-1">
+          <Badge variant="outline" className="border-warning text-warning gap-1">
             <AlertCircle className="h-3 w-3" />
-            {available} left
+            {available} restantes
           </Badge>
         ) : (
-          <Badge variant="outline" className="border-green-500 text-green-600">
-            {available} available
+          <Badge variant="outline" className="border-success text-success">
+            {available} disponibles
           </Badge>
         )}
       </CardHeader>
@@ -46,7 +46,7 @@ export function TableCard({ table }: TableCardProps) {
         <div className="flex flex-col gap-2 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Users className="h-3.5 w-3.5" />
-            <span>{guestCount} {guestCount === 1 ? "guest" : "guests"} assigned</span>
+            <span>{guestCount} {guestCount === 1 ? "invitado" : "invitados"} asignados</span>
           </div>
           {table.location && (
             <div className="flex items-center gap-2">
@@ -57,14 +57,14 @@ export function TableCard({ table }: TableCardProps) {
           {table.invitationsCount !== undefined && table.invitationsCount > 0 && (
             <div className="flex items-center gap-2">
               <Utensils className="h-3.5 w-3.5" />
-              <span>{table.invitationsCount} {table.invitationsCount === 1 ? "invitation" : "invitations"}</span>
+              <span>{table.invitationsCount} {table.invitationsCount === 1 ? "invitación" : "invitaciones"}</span>
             </div>
           )}
         </div>
       </CardContent>
       <CardFooter>
         <Button variant="outline" className="w-full bg-transparent" asChild>
-          <Link href={`/tables/${table.id}`}>View Details</Link>
+          <Link href={`/tables/${table.id}`}>Ver Detalles</Link>
         </Button>
       </CardFooter>
     </Card>

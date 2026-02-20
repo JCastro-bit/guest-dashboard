@@ -31,7 +31,7 @@ export function TablesTable({ tables }: TablesTableProps) {
   }
 
   return (
-    <div className="rounded-md border bg-white">
+    <div className="rounded-md border bg-card">
       <Table>
         <TableHeader>
           <TableRow>
@@ -77,7 +77,7 @@ export function TablesTable({ tables }: TablesTableProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className={`font-medium ${isFull ? 'text-red-600' : isNearCapacity ? 'text-orange-600' : 'text-green-600'}`}>
+                  <span className={`font-medium ${isFull ? 'text-destructive' : isNearCapacity ? 'text-warning' : 'text-success'}`}>
                     {available}
                   </span>
                 </TableCell>
@@ -100,12 +100,12 @@ export function TablesTable({ tables }: TablesTableProps) {
                       Full
                     </Badge>
                   ) : isNearCapacity ? (
-                    <Badge variant="outline" className="border-orange-500 text-orange-600 gap-1">
+                    <Badge variant="outline" className="border-warning text-warning gap-1">
                       <AlertCircle className="h-3 w-3" />
                       {available} left
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="border-green-500 text-green-600">
+                    <Badge variant="outline" className="border-success text-success">
                       Available
                     </Badge>
                   )}
@@ -135,7 +135,7 @@ export function TablesTable({ tables }: TablesTableProps) {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        className="text-red-600"
+                        className="text-destructive"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />

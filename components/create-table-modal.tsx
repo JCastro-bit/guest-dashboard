@@ -35,13 +35,13 @@ export function CreateTableModal() {
     e.preventDefault()
 
     if (!formData.name.trim()) {
-      toast.error("Please enter a table name")
+      toast.error("Por favor ingresa el nombre de la mesa")
       return
     }
 
     const capacity = parseInt(formData.capacity)
     if (isNaN(capacity) || capacity < 1) {
-      toast.error("Please enter a valid capacity")
+      toast.error("Por favor ingresa una capacidad válida")
       return
     }
 
@@ -55,7 +55,7 @@ export function CreateTableModal() {
         notes: formData.notes.trim() || null,
       })
 
-      toast.success("Table created successfully")
+      toast.success("Mesa creada exitosamente")
       setOpen(false)
       setFormData({
         name: "",
@@ -66,7 +66,7 @@ export function CreateTableModal() {
       router.refresh()
     } catch (error) {
       console.error("Error creating table:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to create table")
+      toast.error(error instanceof Error ? error.message : "Error al crear la mesa")
     } finally {
       setIsLoading(false)
     }
@@ -75,26 +75,26 @@ export function CreateTableModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#DC325A] hover:bg-[#DC325A]/90 text-white">
-          <Plus className="mr-2 h-4 w-4" /> Create Table
+        <Button>
+          <Plus className="mr-2 h-4 w-4" /> Crear Mesa
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create Table</DialogTitle>
+            <DialogTitle>Crear Mesa</DialogTitle>
             <DialogDescription>
-              Add a new table to your seating arrangement. You can assign invitations to this table later.
+              Añade una nueva mesa a tu distribución de asientos. Podrás asignar invitaciones a esta mesa más adelante.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                Name *
+                Nombre *
               </Label>
               <Input
                 id="name"
-                placeholder="e.g. Table 1"
+                placeholder="ej. Mesa 1"
                 className="col-span-3"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -104,7 +104,7 @@ export function CreateTableModal() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="capacity" className="text-right">
-                Capacity *
+                Capacidad *
               </Label>
               <Input
                 id="capacity"
@@ -120,11 +120,11 @@ export function CreateTableModal() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="location" className="text-right">
-                Location
+                Ubicación
               </Label>
               <Input
                 id="location"
-                placeholder="e.g. Near entrance"
+                placeholder="ej. Cerca de la entrada"
                 className="col-span-3"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
@@ -133,11 +133,11 @@ export function CreateTableModal() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="notes" className="text-right">
-                Notes
+                Notas
               </Label>
               <Textarea
                 id="notes"
-                placeholder="Additional notes..."
+                placeholder="Notas adicionales..."
                 className="col-span-3"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
@@ -147,7 +147,7 @@ export function CreateTableModal() {
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create Table"}
+              {isLoading ? "Creando..." : "Crear Mesa"}
             </Button>
           </DialogFooter>
         </form>

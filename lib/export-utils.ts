@@ -26,7 +26,7 @@ export async function exportGuestsToExcel(guests: Guest[], filename = "guests.xl
   worksheet.getRow(1).fill = {
     type: "pattern",
     pattern: "solid",
-    fgColor: { argb: "FFE2E8F0" }, // slate-200
+    fgColor: { argb: "FFF5E6D3" }, // LOVEPOSTAL crema arena
   }
 
   // Add data rows
@@ -89,12 +89,12 @@ export function exportGuestsToPDF(guests: Guest[], filename = "guests.pdf") {
       cellPadding: 3,
     },
     headStyles: {
-      fillColor: [71, 85, 105], // slate-600
+      fillColor: [212, 113, 78], // LOVEPOSTAL terracota #D4714E
       textColor: 255,
       fontStyle: "bold",
     },
     alternateRowStyles: {
-      fillColor: [248, 250, 252], // slate-50
+      fillColor: [253, 250, 246], // LOVEPOSTAL fondo #FDFAF6
     },
     columnStyles: {
       0: { cellWidth: 45 }, // Name
