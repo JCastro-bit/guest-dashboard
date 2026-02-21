@@ -154,6 +154,17 @@ El frontend consume los siguientes endpoints del backend:
 ### Health Check
 - `GET /health` - Verificar estado del backend
 
+## Autenticación
+
+El dashboard requiere autenticación. Usuarios no autenticados son redirigidos a `/login`.
+
+### Páginas públicas
+- `/login` — Iniciar sesión
+- `/register` — Crear cuenta
+
+### Variables de entorno
+No hay variables de auth en el frontend. JWT secret y admin credentials están solo en el backend.
+
 ## Guía de Marca
 
 Para lineamientos detallados de marca, colores, tipografía y convenciones de código, consulta [CLAUDE.md](./CLAUDE.md).

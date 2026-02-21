@@ -3,11 +3,8 @@ import type { Metadata } from "next"
 import { Noto_Sans, Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
-import { Navigation } from "@/components/navigation"
-import { SearchProvider } from "@/components/search-provider"
-import { SidebarProvider } from "@/components/sidebar-provider"
-import { MainContent } from "@/components/main-content"
 import { ThemeProvider } from "@/components/theme-provider"
+import { AuthProvider } from "@/components/auth-provider"
 import { Toaster } from "@/components/ui/sonner"
 
 const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" })
@@ -82,13 +79,11 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <body className={`${notoSans.variable} ${playfairDisplay.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <SidebarProvider>
-            <Navigation />
-            <MainContent>{children}</MainContent>
-            <SearchProvider />
+          <AuthProvider>
+            {children}
             <Toaster />
             <Analytics />
-          </SidebarProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

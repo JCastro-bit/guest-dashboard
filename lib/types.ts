@@ -129,3 +129,32 @@ export interface UpdateTableRequest {
   location?: string | null
   notes?: string | null
 }
+
+// ==================== Auth Types ====================
+
+export interface AuthUser {
+  id: string
+  email: string
+  name: string | null
+  role: 'user' | 'admin'
+}
+
+export interface AuthResponse {
+  token: string
+  user: AuthUser
+}
+
+export interface UserProfile extends AuthUser {
+  createdAt: string
+}
+
+export interface LoginRequest {
+  email: string
+  password: string
+}
+
+export interface RegisterRequest {
+  email: string
+  password: string
+  name?: string
+}
