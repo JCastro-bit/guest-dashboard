@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getStats, getInvitationsWithGuests } from "@/lib/api"
 import { StatCard } from "@/components/stat-card"
 import { InvitationCard } from "@/components/invitation-card"
