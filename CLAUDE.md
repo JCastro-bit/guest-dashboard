@@ -47,12 +47,28 @@
 
 ## Estructura
 ```
-app/          — Pages (Next.js App Router)
-components/   — React components
-components/ui/ — shadcn/ui components (no editar manualmente)
-lib/          — API client, types, utilities
-hooks/        — Custom hooks
-public/       — Static assets
+app/
+├── login/        — Página de login (sin sidebar)
+├── register/     — Página de registro (sin sidebar)
+├── (dashboard)/  — Route group: páginas protegidas (con sidebar/nav)
+│   ├── page.tsx  — Dashboard (ruta /)
+│   ├── guests/
+│   ├── invitations/
+│   └── tables/
+components/
+├── auth-provider.tsx  — Context de autenticación + useAuth hook
+├── auth-guard.tsx     — Guard client-side para rutas protegidas
+├── auth-redirect.tsx  — Redirect para login/register si ya autenticado
+├── login-form.tsx     — Formulario de login
+├── register-form.tsx  — Formulario de registro
+├── ui/               — shadcn/ui components (no editar manualmente)
+lib/
+├── auth.ts           — Utilidades de token (get/set/remove + cookie sync)
+├── api.ts            — API client con auth headers automáticos
+├── types.ts          — TypeScript types (incluye auth types)
+hooks/                — Custom hooks
+middleware.ts         — Protección de rutas via cookie indicadora
+public/               — Static assets
 ```
 
 ## Convenciones
@@ -60,6 +76,30 @@ public/       — Static assets
 - Dark mode vía `next-themes` con `ThemeProvider` en layout
 - API client en `lib/api.ts` con `NEXT_PUBLIC_API_URL`
 - Tipos TypeScript en `lib/types.ts`
+
+## Autenticación
+
+### Flujo
+1. Ruta protegida → middleware detecta falta de cookie `lovepostal_auth` → redirige a `/login?from=<ruta>`
+2. Login → backend retorna JWT + user → token en localStorage + cookie indicadora
+3. AuthProvider verifica token al cargar via `GET /api/v1/auth/me`
+4. `fetchAPI` inyecta `Authorization: Bearer <token>` automáticamente
+5. Cualquier 401 → token se limpia → redirige a /login
+
+### Token storage
+- JWT en localStorage (`lovepostal_token`)
+- Cookie indicadora (`lovepostal_auth=1`) solo para middleware Edge — NO contiene JWT
+
+### Endpoints consumidos
+- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/register`
+- `GET /api/v1/auth/me`
+
+### Super Admin
+`user.role` disponible via `useAuth()`. Sin UI diferenciada por rol todavía.
+
+### Limitación conocida
+Server components llaman API sin token (no hay localStorage en servidor). Funciona porque rutas backend son públicas. Requiere cambio cuando backend proteja rutas (Fase 2).
 
 ## Docker / Deploy (Dokploy)
 - **Dockerfile:** Multi-stage (deps → builder → runner), standalone output

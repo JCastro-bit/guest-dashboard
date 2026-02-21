@@ -1,3 +1,4 @@
+import { getToken, removeToken } from "./auth"
 import type {
   Invitation,
   Guest,
@@ -9,7 +10,11 @@ import type {
   Table,
   GlobalTableStats,
   CreateTableRequest,
-  UpdateTableRequest
+  UpdateTableRequest,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+  UserProfile,
 } from "./types"
 
 // Get API URL from environment variable
@@ -22,19 +27,38 @@ async function fetchAPI<T>(
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`
 
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...((options?.headers as Record<string, string>) || {}),
+  }
+
+  // Inyectar token si existe (solo en cliente)
+  const token = getToken()
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`
+  }
+
   const defaultOptions: RequestInit = {
-    headers: {
-      "Content-Type": "application/json",
-    },
     ...options,
+    headers,
   }
 
   try {
     const response = await fetch(url, defaultOptions)
 
     if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(`API Error (${response.status}): ${errorText}`)
+      // 401 global: limpiar token y redirigir a login
+      if (response.status === 401) {
+        removeToken()
+        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+          window.location.href = '/login'
+          return new Promise(() => {})
+        }
+      }
+
+      const errorData = await response.json().catch(() => null)
+      const message = errorData?.error?.message || errorData?.message || `API Error (${response.status})`
+      throw new Error(message)
     }
 
     // Handle 204 No Content responses
@@ -44,6 +68,9 @@ async function fetchAPI<T>(
 
     return await response.json()
   } catch (error) {
+    if (error instanceof Error && error.message.includes('API Error')) {
+      throw error
+    }
     console.error(`API request failed: ${url}`, error)
     throw error
   }
@@ -237,6 +264,26 @@ export async function deleteTable(id: string): Promise<void> {
 export async function getTableStats(): Promise<GlobalTableStats> {
   const result = await fetchAPI<GlobalTableStats>("/api/v1/stats/tables")
   return result
+}
+
+// ==================== Auth API ====================
+
+export async function login(data: LoginRequest): Promise<AuthResponse> {
+  return fetchAPI<AuthResponse>("/api/v1/auth/login", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function register(data: RegisterRequest): Promise<AuthResponse> {
+  return fetchAPI<AuthResponse>("/api/v1/auth/register", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
+
+export async function getMe(): Promise<UserProfile> {
+  return fetchAPI<UserProfile>("/api/v1/auth/me")
 }
 
 // ==================== Health Check ====================

@@ -10,6 +10,7 @@ import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useSidebar } from "@/components/sidebar-provider"
 import { useTheme } from "next-themes"
+import { useAuth } from "@/components/auth-provider"
 
 const routes = [
   {
@@ -125,6 +126,7 @@ function BrandLogo({ collapsed, inSidebar = true }: { collapsed: boolean; inSide
 function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: string; onNavigate?: () => void; isCollapsed: boolean }) {
   const [isMac, setIsMac] = useState(false)
   const { toggleSidebar } = useSidebar()
+  const { user, logout } = useAuth()
 
   useEffect(() => {
     setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0)
@@ -205,6 +207,12 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
         </div>
       </div>
       <div className="mt-auto px-3 py-2">
+        {!isCollapsed && user && (
+          <div className="px-3 py-2 mb-2">
+            <p className="text-sm font-medium truncate text-sidebar-foreground">{user.name || 'Usuario'}</p>
+            <p className="text-xs text-sidebar-foreground/70 truncate">{user.email}</p>
+          </div>
+        )}
         <div className="space-y-1">
           <Button
             variant="ghost"
@@ -219,11 +227,12 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
           </Button>
           <Button
             variant="ghost"
+            onClick={logout}
             className={cn(
               "w-full text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent",
               isCollapsed ? "justify-center px-2" : "justify-start"
             )}
-            title={isCollapsed ? "Logout" : undefined}
+            title={isCollapsed ? "Cerrar sesión" : undefined}
           >
             <LogOut className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")} />
             {!isCollapsed && "Cerrar sesión"}
