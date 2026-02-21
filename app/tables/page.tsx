@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getTables, getTableStats } from "@/lib/api"
 import { CreateTableModal } from "@/components/create-table-modal"
 import type { Metadata } from "next"

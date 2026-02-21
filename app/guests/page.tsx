@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getInvitationsWithGuests } from "@/lib/api"
 import { GuestTable } from "@/components/guest-table"
 import { Button } from "@/components/ui/button"

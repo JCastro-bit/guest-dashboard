@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getInvitationsWithGuests } from "@/lib/api"
 import { CreateInvitationModal } from "@/components/create-invitation-modal"
 import type { Metadata } from "next"
