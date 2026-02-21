@@ -29,14 +29,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     getMe()
       .then((profile) => {
+        const normalizedRole: 'user' | 'admin' =
+          profile.role === 'admin' || profile.role === 'user' ? profile.role : 'user'
+        if (normalizedRole !== profile.role) {
+          console.warn(`Unknown role "${profile.role}" received from API, defaulting to "user"`)
+        }
         setUser({
           id: profile.id,
           email: profile.email,
           name: profile.name,
-          role: profile.role as 'user' | 'admin',
+          role: normalizedRole,
         })
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Failed to fetch authenticated user during initial load:', error)
         removeToken()
       })
       .finally(() => {

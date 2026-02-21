@@ -37,7 +37,7 @@ export default function LoginPage() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://images.unsplash.com/photo-1570400576441-02058d69a07d?q=80&w=1738&auto=format&fit=crop"
-            alt="Decoración de boda"
+            alt=""
             className="absolute inset-0 h-full w-full object-cover opacity-80 dark:brightness-[0.3] dark:grayscale"
           />
         </div>
