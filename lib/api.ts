@@ -20,6 +20,10 @@ import type {
 // Get API URL from environment variable
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
 
+// Prevents multiple simultaneous 401-triggered redirects.
+// Resets automatically on page navigation since it's module-level.
+let isRedirectingToLogin = false
+
 // Helper function to handle API requests
 async function fetchAPI<T>(
   endpoint: string,
@@ -47,12 +51,17 @@ async function fetchAPI<T>(
     const response = await fetch(url, defaultOptions)
 
     if (!response.ok) {
-      // 401 global: limpiar token y redirigir a login
+      // 401 global: limpiar token y redirigir a login (evitar bucles en rutas de auth)
       if (response.status === 401) {
         removeToken()
-        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-          window.location.href = '/login'
-          return new Promise(() => {})
+        if (typeof window !== 'undefined') {
+          const { pathname } = window.location
+          const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register')
+          if (!isAuthRoute && !isRedirectingToLogin) {
+            isRedirectingToLogin = true
+            window.location.href = '/login'
+            throw new Error('Unauthorized - redirecting to login')
+          }
         }
       }
 

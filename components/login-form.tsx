@@ -30,8 +30,9 @@ export function LoginForm({
     try {
       await login({ email, password })
       toast.success('¡Bienvenido de vuelta!')
-      const from = searchParams.get('from') || '/'
-      router.push(from)
+      const from = searchParams.get('from')
+      const redirectTo = from && from.startsWith('/') && !from.startsWith('//') ? from : '/'
+      router.push(redirectTo)
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Error al iniciar sesión'
       toast.error(message)

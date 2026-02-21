@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
     PUBLIC_PATHS.some((path) => pathname.startsWith(path)) ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
-    pathname.includes('.')
+    /\.(?:ico|png|jpg|jpeg|webp|svg|gif|css|js|woff2?|ttf|otf|map)$/i.test(pathname)
   ) {
     return NextResponse.next()
   }
