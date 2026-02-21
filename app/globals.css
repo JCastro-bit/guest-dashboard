@@ -30,14 +30,14 @@
   --chart-4: hsl(211 28% 50%);
   --chart-5: hsl(0 72% 51%);
   --radius: 0.5rem;
-  --sidebar: hsl(30 67% 97%);
-  --sidebar-foreground: hsl(25 53% 12%);
-  --sidebar-primary: hsl(16 61% 57%);
-  --sidebar-primary-foreground: hsl(30 67% 97%);
-  --sidebar-accent: hsl(34 63% 89%);
-  --sidebar-accent-foreground: hsl(25 53% 12%);
-  --sidebar-border: hsl(30 35% 85%);
-  --sidebar-ring: hsl(16 61% 57%);
+  --sidebar: hsl(16 61% 57%);
+  --sidebar-foreground: hsl(0 0% 100%);
+  --sidebar-primary: hsl(16 45% 45%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(16 55% 50%);
+  --sidebar-accent-foreground: hsl(0 0% 100%);
+  --sidebar-border: hsl(16 50% 48%);
+  --sidebar-ring: hsl(0 0% 100%);
 
   /* Semantic colors */
   --success: hsl(140 26% 39%);
@@ -74,14 +74,14 @@
   --chart-3: hsl(34 45% 50%);
   --chart-4: hsl(211 28% 60%);
   --chart-5: hsl(0 63% 45%);
-  --sidebar: hsl(25 53% 8%);
+  --sidebar: hsl(16 45% 25%);
   --sidebar-foreground: hsl(34 63% 89%);
-  --sidebar-primary: hsl(16 61% 57%);
+  --sidebar-primary: hsl(16 40% 20%);
   --sidebar-primary-foreground: hsl(30 67% 97%);
-  --sidebar-accent: hsl(25 35% 18%);
+  --sidebar-accent: hsl(16 42% 30%);
   --sidebar-accent-foreground: hsl(34 63% 89%);
-  --sidebar-border: hsl(25 35% 18%);
-  --sidebar-ring: hsl(16 61% 57%);
+  --sidebar-border: hsl(16 40% 20%);
+  --sidebar-ring: hsl(34 63% 89%);
 
   /* Semantic colors — Dark */
   --success: hsl(140 26% 49%);

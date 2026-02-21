@@ -48,7 +48,7 @@ export function Navigation() {
       {/* Mobile Navigation */}
       <div className="md:hidden flex items-center justify-between p-4 border-b bg-background">
         <Link href="/">
-          <BrandLogo collapsed={false} />
+          <BrandLogo collapsed={false} inSidebar={false} />
         </Link>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={handleSearchClick}>
@@ -69,7 +69,7 @@ export function Navigation() {
 
       {/* Desktop Sidebar */}
       <div className={cn(
-        "hidden md:flex h-full flex-col fixed inset-y-0 z-50 border-r bg-background transition-all duration-300",
+        "hidden md:flex h-full flex-col fixed inset-y-0 z-50 border-r border-sidebar-border bg-sidebar transition-all duration-300",
         isCollapsed ? "w-20" : "w-72"
       )}>
         <SidebarContent pathname={pathname} isCollapsed={isCollapsed} />
@@ -78,7 +78,7 @@ export function Navigation() {
   )
 }
 
-function BrandLogo({ collapsed }: { collapsed: boolean }) {
+function BrandLogo({ collapsed, inSidebar = true }: { collapsed: boolean; inSidebar?: boolean }) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -86,12 +86,14 @@ function BrandLogo({ collapsed }: { collapsed: boolean }) {
     setMounted(true)
   }, [])
 
+  const fallbackTextClass = inSidebar ? "text-sidebar-foreground" : "text-foreground"
+
   if (collapsed) {
-    return <span className="font-serif font-bold text-lg text-primary">LP</span>
+    return <span className={cn("font-serif font-bold text-lg", fallbackTextClass)}>LP</span>
   }
 
   if (!mounted) {
-    return <span className="font-serif font-bold text-2xl text-primary">LOVEPOSTAL</span>
+    return <span className={cn("font-serif font-bold text-2xl", fallbackTextClass)}>LOVEPOSTAL</span>
   }
 
   const logoSrc = resolvedTheme === "dark"
@@ -123,18 +125,18 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
   }
 
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full bg-background">
+    <div className="space-y-4 py-4 flex flex-col h-full bg-sidebar">
       <div className="px-3 py-2">
         <div className="flex items-center justify-between mb-8">
           <Link href="/" className={cn("flex items-center", isCollapsed ? "px-1" : "pl-3")} onClick={onNavigate}>
-            <BrandLogo collapsed={isCollapsed} />
+            <BrandLogo collapsed={isCollapsed} inSidebar={true} />
           </Link>
           {!onNavigate && (
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleSidebar}
-              className={cn("h-8 w-8", isCollapsed && "mx-auto")}
+              className={cn("h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-sidebar-ring", isCollapsed && "mx-auto")}
             >
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </Button>
@@ -144,13 +146,13 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
         {!isCollapsed && (
           <button
             onClick={handleSearchClick}
-            className="w-full mb-6 flex items-center justify-between px-3 py-2 text-sm text-muted-foreground bg-muted/50 hover:bg-muted rounded-lg transition-colors group"
+            className="w-full mb-6 flex items-center justify-between px-3 py-2 text-sm text-sidebar-foreground/70 bg-sidebar-accent/30 hover:bg-sidebar-accent rounded-lg transition-colors group"
           >
             <div className="flex items-center">
               <Search className="h-4 w-4 mr-2" />
               <span>Buscar...</span>
             </div>
-            <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground opacity-100">
+            <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-sidebar-border bg-sidebar-accent/50 px-1.5 font-mono text-xs font-medium text-sidebar-foreground/70 opacity-100">
               <span className="text-xs">{isMac ? "\u2318" : "Ctrl"}</span>K
             </kbd>
           </button>
@@ -161,7 +163,7 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
             variant="ghost"
             size="icon"
             onClick={handleSearchClick}
-            className="w-full mb-6 h-10 text-muted-foreground"
+            className="w-full mb-6 h-10 text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             title="Buscar (Ctrl+K)"
           >
             <Search className="h-5 w-5" />
@@ -175,8 +177,10 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
               href={route.href}
               onClick={onNavigate}
               className={cn(
-                "text-sm group flex p-3 w-full font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
-                pathname === route.href ? "bg-primary/10 text-primary" : "text-muted-foreground",
+                "text-sm group flex p-3 w-full font-medium cursor-pointer rounded-lg transition",
+                pathname === route.href
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
+                  : "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent",
                 isCollapsed ? "justify-center" : "justify-start"
               )}
               title={isCollapsed ? route.label : undefined}
@@ -194,7 +198,7 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
           <Button
             variant="ghost"
             className={cn(
-              "w-full text-muted-foreground",
+              "w-full text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
               isCollapsed ? "justify-center px-2" : "justify-start"
             )}
             title={isCollapsed ? "Settings" : undefined}
@@ -205,7 +209,7 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
           <Button
             variant="ghost"
             className={cn(
-              "w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10",
+              "w-full text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent",
               isCollapsed ? "justify-center px-2" : "justify-start"
             )}
             title={isCollapsed ? "Logout" : undefined}
