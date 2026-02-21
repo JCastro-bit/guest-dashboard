@@ -89,7 +89,18 @@ function BrandLogo({ collapsed, inSidebar = true }: { collapsed: boolean; inSide
   const fallbackTextClass = inSidebar ? "text-sidebar-foreground" : "text-foreground"
 
   if (collapsed) {
-    return <span className={cn("font-serif font-bold text-lg", fallbackTextClass)}>LP</span>
+    if (!mounted) {
+      return <span className={cn("font-serif font-bold text-lg", fallbackTextClass)}>LP</span>
+    }
+    return (
+      <Image
+        src="https://cdn.lovepostal.studio/isotipos/isotipo_lovepostal_10.webp"
+        alt="LOVEPOSTAL"
+        width={40}
+        height={40}
+        className="h-10 w-10 object-contain"
+      />
+    )
   }
 
   if (!mounted) {
