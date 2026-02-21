@@ -48,7 +48,7 @@ export function Navigation() {
       {/* Mobile Navigation */}
       <div className="md:hidden flex items-center justify-between p-4 border-b bg-background">
         <Link href="/">
-          <BrandLogo collapsed={false} />
+          <BrandLogo collapsed={false} inSidebar={false} />
         </Link>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={handleSearchClick}>
@@ -78,7 +78,7 @@ export function Navigation() {
   )
 }
 
-function BrandLogo({ collapsed }: { collapsed: boolean }) {
+function BrandLogo({ collapsed, inSidebar = true }: { collapsed: boolean; inSidebar?: boolean }) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -86,12 +86,14 @@ function BrandLogo({ collapsed }: { collapsed: boolean }) {
     setMounted(true)
   }, [])
 
+  const fallbackTextClass = inSidebar ? "text-sidebar-foreground" : "text-foreground"
+
   if (collapsed) {
-    return <span className="font-serif font-bold text-lg text-sidebar-foreground">LP</span>
+    return <span className={cn("font-serif font-bold text-lg", fallbackTextClass)}>LP</span>
   }
 
   if (!mounted) {
-    return <span className="font-serif font-bold text-2xl text-sidebar-foreground">LOVEPOSTAL</span>
+    return <span className={cn("font-serif font-bold text-2xl", fallbackTextClass)}>LOVEPOSTAL</span>
   }
 
   const logoSrc = resolvedTheme === "dark"
@@ -127,14 +129,14 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
       <div className="px-3 py-2">
         <div className="flex items-center justify-between mb-8">
           <Link href="/" className={cn("flex items-center", isCollapsed ? "px-1" : "pl-3")} onClick={onNavigate}>
-            <BrandLogo collapsed={isCollapsed} />
+            <BrandLogo collapsed={isCollapsed} inSidebar={true} />
           </Link>
           {!onNavigate && (
             <Button
               variant="ghost"
               size="icon"
               onClick={toggleSidebar}
-              className={cn("h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground", isCollapsed && "mx-auto")}
+              className={cn("h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-sidebar-ring", isCollapsed && "mx-auto")}
             >
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </Button>
@@ -175,8 +177,10 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
               href={route.href}
               onClick={onNavigate}
               className={cn(
-                "text-sm group flex p-3 w-full font-medium cursor-pointer hover:text-sidebar-accent-foreground hover:bg-sidebar-accent rounded-lg transition",
-                pathname === route.href ? "bg-sidebar-primary text-sidebar-primary-foreground" : "text-sidebar-foreground/70",
+                "text-sm group flex p-3 w-full font-medium cursor-pointer rounded-lg transition",
+                pathname === route.href
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
+                  : "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent",
                 isCollapsed ? "justify-center" : "justify-start"
               )}
               title={isCollapsed ? route.label : undefined}
