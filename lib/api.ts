@@ -37,6 +37,17 @@ const ERROR_MESSAGES: Record<number, string> = {
 // Resets automatically on page navigation since it's module-level.
 let isRedirectingToLogin = false
 
+// Read token from cookies on the server side (server components)
+async function getServerToken(): Promise<string | null> {
+  try {
+    const { cookies } = await import('next/headers')
+    const cookieStore = await cookies()
+    return cookieStore.get('lovepostal_token')?.value ?? null
+  } catch {
+    return null
+  }
+}
+
 // Helper function to handle API requests
 async function fetchAPI<T>(
   endpoint: string,
@@ -49,8 +60,8 @@ async function fetchAPI<T>(
     ...((options?.headers as Record<string, string>) || {}),
   }
 
-  // Inyectar token si existe (solo en cliente)
-  const token = getToken()
+  // Inyectar token: localStorage en cliente, cookie en servidor
+  const token = typeof window !== 'undefined' ? getToken() : await getServerToken()
   if (token) {
     headers["Authorization"] = `Bearer ${token}`
   }

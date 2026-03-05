@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
-import { getToken, setToken, removeToken } from '@/lib/auth'
+import { getToken, setToken, removeToken, syncTokenCookie } from '@/lib/auth'
 import { login as apiLogin, register as apiRegister, getMe } from '@/lib/api'
 import type { AuthUser, LoginRequest, RegisterRequest } from '@/lib/types'
 
@@ -22,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    syncTokenCookie()
     const token = getToken()
     if (!token) {
       setIsLoading(false)
