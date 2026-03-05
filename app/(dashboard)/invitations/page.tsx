@@ -5,6 +5,7 @@ import { CreateInvitationModal } from "@/components/create-invitation-modal"
 import { PlanGate } from "@/components/plan-gate"
 import type { Metadata } from "next"
 import { InvitationsContainer } from "@/components/invitations-container"
+import { ErrorAlert } from "@/components/error-alert"
 import type { Invitation } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -24,11 +25,13 @@ export const metadata: Metadata = {
 
 export default async function InvitationsPage() {
   let invitations: Invitation[] = []
+  let hasError = false
 
   try {
     invitations = await getInvitationsWithGuests()
   } catch (error) {
     console.error("Error loading invitations:", error)
+    hasError = true
   }
 
   return (
@@ -39,6 +42,8 @@ export default async function InvitationsPage() {
           <CreateInvitationModal />
         </PlanGate>
       </div>
+
+      {hasError && <ErrorAlert />}
 
       <InvitationsContainer invitations={invitations} />
     </div>

@@ -11,6 +11,7 @@ import { ArrowRight } from "lucide-react"
 import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
 import { UpgradeBanner } from "@/components/upgrade-banner"
+import { ErrorAlert } from "@/components/error-alert"
 import type { DashboardStats, Invitation } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   let stats: DashboardStats | null = null
   let invitations: Invitation[] = []
+  let hasError = false
 
   try {
     const results = await Promise.allSettled([
@@ -40,12 +42,17 @@ export default async function DashboardPage() {
 
     if (results[0].status === "fulfilled") {
       stats = results[0].value
+    } else {
+      hasError = true
     }
     if (results[1].status === "fulfilled") {
       invitations = results[1].value
+    } else {
+      hasError = true
     }
   } catch (error) {
     console.error("Error loading dashboard:", error)
+    hasError = true
   }
 
   const recentInvitations = invitations.slice(0, 3)
@@ -54,6 +61,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <UpgradeBanner message="Activa tu plan para comenzar a crear invitaciones y gestionar tu boda." />
+
+      {hasError && <ErrorAlert />}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-3xl font-serif font-bold tracking-tight">Tablero</h2>
@@ -92,11 +101,7 @@ export default async function DashboardPage() {
             className="border-l-4 border-l-destructive"
           />
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center min-h-[120px] gap-2 p-6 rounded-xl bg-card border border-border">
-          <p className="text-sm text-muted-foreground">No se pudieron cargar las estadisticas.</p>
-        </div>
-      )}
+      ) : null}
 
       {isNewWedding && (
         <div className="flex flex-col items-center gap-3 p-8 rounded-xl bg-card border border-border text-center">

@@ -8,6 +8,7 @@ import { ExportGuestsButton } from "@/components/export-guests-button"
 import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
 import Link from "next/link"
+import { ErrorAlert } from "@/components/error-alert"
 import type { Guest } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -27,12 +28,14 @@ export const metadata: Metadata = {
 
 export default async function GuestsPage() {
   let guests: Guest[] = []
+  let hasError = false
 
   try {
     const invitations = await getInvitationsWithGuests()
     guests = invitations.flatMap((inv) => inv.guests || [])
   } catch (error) {
     console.error("Error loading guests:", error)
+    hasError = true
   }
 
   return (
@@ -41,6 +44,8 @@ export default async function GuestsPage() {
         <h2 className="text-3xl font-serif font-bold tracking-tight">Lista de Invitados</h2>
         <ExportGuestsButton guests={guests} />
       </div>
+
+      {hasError && <ErrorAlert />}
 
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-lg shadow-sm border">
         <SearchButton variant="prominent" className="w-full sm:max-w-md" />

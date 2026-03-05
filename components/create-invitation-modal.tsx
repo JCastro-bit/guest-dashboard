@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getTables } from "@/lib/api"
+import { toast } from "sonner"
 import type { Table } from "@/lib/types"
 
 export function CreateInvitationModal() {
@@ -36,6 +37,7 @@ export function CreateInvitationModal() {
       setTables(data)
     } catch (error) {
       console.error("Failed to load tables:", error)
+      toast.error("No se pudieron cargar las mesas. Puedes continuar sin asignar mesa.")
     } finally {
       setLoading(false)
     }

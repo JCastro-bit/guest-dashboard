@@ -23,6 +23,8 @@ LOVEPOSTAL es una plataforma B2C SaaS de invitaciones digitales para bodas (merc
 ```
 app/
   layout.tsx              — Root layout (fonts, ThemeProvider, AuthProvider, Toaster)
+  error.tsx               — Error boundary global (fallback para errores fuera del dashboard)
+  not-found.tsx           — Página 404 global
   globals.css             — Variables CSS del design system (light + dark)
   login/page.tsx          — Login público (sin sidebar)
   register/page.tsx       — Registro público (sin sidebar)
@@ -33,12 +35,13 @@ app/
   sitemap.ts              — Sitemap metadata
   (dashboard)/            — Route group protegido (con sidebar/nav)
     layout.tsx            — AuthGuard + SidebarProvider + Navigation (layout protegido)
-    page.tsx              — Dashboard principal (stats + UpgradeBanner)
-    guests/page.tsx       — Lista de invitados
-    invitations/          — CRUD invitaciones + detalle [id] (crear gateado por PlanGate)
-    tables/               — CRUD mesas + detalle [id] (crear gateado por PlanGate)
+    error.tsx             — Error boundary del dashboard (reintentar)
+    page.tsx              — Dashboard principal (stats + UpgradeBanner + ErrorAlert)
+    guests/page.tsx       — Lista de invitados (con ErrorAlert si falla carga)
+    invitations/          — CRUD invitaciones + detalle [id] (crear gateado por PlanGate, ErrorAlert)
+    tables/               — CRUD mesas + detalle [id] (crear gateado por PlanGate, ErrorAlert)
     upgrade/page.tsx      — Página de selección de plan (Esencial / Premium)
-    upgrade/success/      — Pago exitoso (auto-refresh para detectar activación)
+    upgrade/success/      — Pago exitoso (polling con feedback visual de activación)
     upgrade/failure/      — Pago fallido
     upgrade/pending/      — Pago pendiente
 components/
@@ -51,6 +54,7 @@ components/
   reset-password-form.tsx  — Formulario reset-password (estados: idle/loading/success/error)
   upgrade-banner.tsx      — Banner de upgrade (self-contained, lee useAuth internamente)
   plan-gate.tsx           — Overlay de bloqueo para acciones de escritura sin plan activo
+  error-alert.tsx         — Banner inline reutilizable para errores de carga (con botón reintentar)
   navigation.tsx          — Sidebar + header del dashboard (incluye badge de plan)
   sidebar-provider.tsx    — Context de sidebar (collapsed state)
   theme-provider.tsx      — Wrapper de next-themes
@@ -135,6 +139,16 @@ docker run -p 3000:3000 guest-dashboard
 - **Resultado de pago:** MercadoPago redirige a `/upgrade/success`, `/upgrade/failure` o `/upgrade/pending`
 - Success page hace auto-refresh (5 intentos c/3s) de `refreshUser()` para detectar activación del plan
 - Endpoint: `POST /api/v1/payments/create-preference` (body: `{ plan }`, respuesta: `{ initPoint, sandboxInitPoint }`)
+
+### Manejo de errores
+- **`fetchAPI()` (lib/api.ts):** Traduce códigos HTTP a mensajes en español user-friendly (400, 401, 403, 404, 409, 422, 429, 500, 503). Errores de red ("Failed to fetch") se convierten en "No se pudo conectar con el servidor."
+- **401 global:** Cualquier respuesta 401 limpia el token y redirige a `/login` automáticamente (evita bucles en rutas de auth)
+- **Server components (páginas):** Usan `Promise.allSettled` o try/catch; si falla la carga, muestran `<ErrorAlert />` inline con botón "Reintentar" (router.refresh). Nunca muestran errores técnicos al usuario.
+- **Client components (modals/forms):** Usan `toast.error()` con el mensaje del Error capturado (que ya viene en español desde `fetchAPI`). Formularios con react-hook-form muestran errores de validación Zod inline.
+- **Error boundaries:** `app/error.tsx` (global) y `app/(dashboard)/error.tsx` (dashboard) capturan errores no manejados con UI de "Algo salio mal" + botón reintentar.
+- **404:** `app/not-found.tsx` (global) + `invitations/[id]/not-found.tsx` y `tables/[id]/not-found.tsx` para detalle no encontrado.
+- **Componente `ErrorAlert`:** Banner reutilizable (`components/error-alert.tsx`) para errores de carga en server pages. Props: `title`, `message`, `retry` (boolean).
+- **Upgrade success:** Polling con feedback visual — muestra spinner mientras detecta activación, mensaje claro si el polling agota intentos.
 
 ### Variables de entorno
 - `NEXT_PUBLIC_API_URL` — URL del backend (se resuelve en BUILD TIME)

@@ -6,6 +6,7 @@ import { PlanGate } from "@/components/plan-gate"
 import type { Metadata } from "next"
 import { TablesContainer } from "@/components/tables-container"
 import { TableStatsCards } from "@/components/table-stats-cards"
+import { ErrorAlert } from "@/components/error-alert"
 import type { Table } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
 export default async function TablesPage() {
   let tables: Table[] = []
   let stats = null
+  let hasError = false
 
   try {
     const results = await Promise.allSettled([
@@ -33,21 +35,22 @@ export default async function TablesPage() {
       getTableStats()
     ])
 
-    // Handle tables result
     if (results[0].status === 'fulfilled') {
       tables = results[0].value
     } else {
       console.error('Failed to fetch tables:', results[0].reason)
+      hasError = true
     }
 
-    // Handle stats result
     if (results[1].status === 'fulfilled') {
       stats = results[1].value
     } else {
       console.error('Failed to fetch table stats:', results[1].reason)
+      hasError = true
     }
   } catch (error) {
     console.error('Error loading tables page:', error)
+    hasError = true
   }
 
   return (
@@ -58,6 +61,8 @@ export default async function TablesPage() {
           <CreateTableModal />
         </PlanGate>
       </div>
+
+      {hasError && <ErrorAlert />}
 
       <TableStatsCards stats={stats} />
 
