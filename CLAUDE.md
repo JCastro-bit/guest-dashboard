@@ -33,10 +33,14 @@ app/
   sitemap.ts              — Sitemap metadata
   (dashboard)/            — Route group protegido (con sidebar/nav)
     layout.tsx            — AuthGuard + SidebarProvider + Navigation (layout protegido)
-    page.tsx              — Dashboard principal (stats)
+    page.tsx              — Dashboard principal (stats + UpgradeBanner)
     guests/page.tsx       — Lista de invitados
-    invitations/          — CRUD invitaciones + detalle [id]
-    tables/               — CRUD mesas + detalle [id]
+    invitations/          — CRUD invitaciones + detalle [id] (crear gateado por PlanGate)
+    tables/               — CRUD mesas + detalle [id] (crear gateado por PlanGate)
+    upgrade/page.tsx      — Página de selección de plan (Esencial / Premium)
+    upgrade/success/      — Pago exitoso (auto-refresh para detectar activación)
+    upgrade/failure/      — Pago fallido
+    upgrade/pending/      — Pago pendiente
 components/
   auth-provider.tsx       — Context de auth + hook useAuth()
   auth-guard.tsx          — Guard client-side para rutas protegidas
@@ -45,14 +49,17 @@ components/
   register-form.tsx       — Formulario registro con validación Zod
   forgot-password-form.tsx — Formulario forgot-password (estados: idle/loading/success)
   reset-password-form.tsx  — Formulario reset-password (estados: idle/loading/success/error)
-  navigation.tsx          — Sidebar + header del dashboard
+  upgrade-banner.tsx      — Banner de upgrade (self-contained, lee useAuth internamente)
+  plan-gate.tsx           — Overlay de bloqueo para acciones de escritura sin plan activo
+  navigation.tsx          — Sidebar + header del dashboard (incluye badge de plan)
   sidebar-provider.tsx    — Context de sidebar (collapsed state)
   theme-provider.tsx      — Wrapper de next-themes
   ui/                     — Componentes shadcn/ui (no editar manualmente)
 lib/
-  api.ts                  — Cliente API con auth headers automáticos (fetchAPI)
+  api.ts                  — Cliente API con auth headers automáticos (fetchAPI, createPaymentPreference)
   auth.ts                 — Token storage (localStorage + cookie indicadora)
-  types.ts                — Tipos TypeScript (Guest, Invitation, Table, Auth)
+  types.ts                — Tipos TypeScript (Guest, Invitation, Table, Auth, Plan, PlanStatus)
+  plan.ts                 — Helpers de plan (canWrite, isPlanActive, hasQrAccess, PLAN_LABELS, PLAN_PRICES)
   utils.ts                — cn() helper (clsx + tailwind-merge)
   export-utils.ts         — Exportación a Excel/PDF
 hooks/                    — use-mobile.ts, use-toast.ts
@@ -116,6 +123,18 @@ docker run -p 3000:3000 guest-dashboard
 - El forgot-password siempre muestra mensaje genérico (no revela si el email existe)
 - El reset-password lee el token desde `?token=` en la URL y lo envía en el body
 - Endpoints: `POST /api/v1/auth/login`, `POST /api/v1/auth/register`, `GET /api/v1/auth/me`, `POST /api/v1/auth/forgot-password`, `POST /api/v1/auth/reset-password`
+- `GET /auth/me` devuelve `plan` y `planStatus` en el usuario; `auth-provider` aplica fallbacks (`'free'` / `'inactive'`) en login, register e initial load
+
+### Planes y pagos
+- Tipos: `Plan = 'free' | 'esencial' | 'premium'`, `PlanStatus = 'inactive' | 'active' | 'expired'`
+- `AuthUser` incluye `plan` y `planStatus`; `auth-provider` expone `refreshUser()` para re-fetch de `/auth/me`
+- Helpers en `lib/plan.ts`: `canWrite()` (plan activo y no free), `isPlanActive()`, `hasQrAccess()` (solo premium)
+- **Plan gate (client-side UX, no seguridad):** `PlanGate` bloquea visualmente botones de crear; `UpgradeBanner` muestra banner en dashboard
+- Ambos componentes son self-contained: leen de `useAuth()` internamente, no requieren props de plan
+- **Upgrade flow:** `/upgrade` muestra cards de Esencial ($2,250) y Premium ($4,499) → click llama `createPaymentPreference()` via `fetchAPI` → redirige a MercadoPago `initPoint` (producción) o `sandboxInitPoint` (desarrollo)
+- **Resultado de pago:** MercadoPago redirige a `/upgrade/success`, `/upgrade/failure` o `/upgrade/pending`
+- Success page hace auto-refresh (5 intentos c/3s) de `refreshUser()` para detectar activación del plan
+- Endpoint: `POST /api/v1/payments/create-preference` (body: `{ plan }`, respuesta: `{ initPoint, sandboxInitPoint }`)
 
 ### Variables de entorno
 - `NEXT_PUBLIC_API_URL` — URL del backend (se resuelve en BUILD TIME)
