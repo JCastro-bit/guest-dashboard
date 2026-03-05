@@ -4,10 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Check, Loader2, Sparkles, Crown } from "lucide-react"
 import { useAuth } from "@/components/auth-provider"
-import { canWrite } from "@/lib/plan"
-import { PLAN_PRICES } from "@/lib/plan"
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+import { canWrite, PLAN_PRICES } from "@/lib/plan"
 
 const PLAN_FEATURES = {
   esencial: [
@@ -40,23 +37,8 @@ export default function UpgradePage() {
     setError(null)
 
     try {
-      const { getToken } = await import("@/lib/auth")
-      const token = getToken()
-
-      const response = await fetch(`${API_URL}/api/v1/payments/create-preference`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ plan }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Error al crear la preferencia de pago.")
-      }
-
-      const data = await response.json()
+      const { createPaymentPreference } = await import("@/lib/api")
+      const data = await createPaymentPreference(plan)
       const url = process.env.NODE_ENV === "production"
         ? data.initPoint
         : data.sandboxInitPoint

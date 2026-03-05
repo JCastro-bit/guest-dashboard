@@ -56,13 +56,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (data: LoginRequest) => {
     const response = await apiLogin(data)
     setToken(response.token)
-    setUser(response.user)
+    setUser({
+      ...response.user,
+      plan: response.user.plan ?? 'free',
+      planStatus: response.user.planStatus ?? 'inactive',
+    })
   }, [])
 
   const register = useCallback(async (data: RegisterRequest) => {
     const response = await apiRegister(data)
     setToken(response.token)
-    setUser(response.user)
+    setUser({
+      ...response.user,
+      plan: response.user.plan ?? 'free',
+      planStatus: response.user.planStatus ?? 'inactive',
+    })
   }, [])
 
   const refreshUser = useCallback(async () => {

@@ -312,6 +312,17 @@ export async function getMe(): Promise<UserProfile> {
   return fetchAPI<UserProfile>("/api/v1/auth/me")
 }
 
+// ==================== Payments API ====================
+
+export async function createPaymentPreference(
+  plan: "esencial" | "premium"
+): Promise<{ initPoint: string; sandboxInitPoint: string }> {
+  return fetchAPI<{ initPoint: string; sandboxInitPoint: string }>(
+    "/api/v1/payments/create-preference",
+    { method: "POST", body: JSON.stringify({ plan }) }
+  )
+}
+
 // ==================== Health Check ====================
 
 export async function healthCheck(): Promise<boolean> {
