@@ -26,6 +26,8 @@ app/
   globals.css             — Variables CSS del design system (light + dark)
   login/page.tsx          — Login público (sin sidebar)
   register/page.tsx       — Registro público (sin sidebar)
+  forgot-password/page.tsx — Solicitar reset de contraseña (público)
+  reset-password/page.tsx  — Restablecer contraseña con token (público)
   opengraph-image.tsx     — OG image generation
   robots.ts               — Robots.txt metadata
   sitemap.ts              — Sitemap metadata
@@ -41,6 +43,8 @@ components/
   auth-redirect.tsx       — Redirect si ya autenticado (login/register)
   login-form.tsx          — Formulario login con validación Zod
   register-form.tsx       — Formulario registro con validación Zod
+  forgot-password-form.tsx — Formulario forgot-password (estados: idle/loading/success)
+  reset-password-form.tsx  — Formulario reset-password (estados: idle/loading/success/error)
   navigation.tsx          — Sidebar + header del dashboard
   sidebar-provider.tsx    — Context de sidebar (collapsed state)
   theme-provider.tsx      — Wrapper de next-themes
@@ -52,7 +56,7 @@ lib/
   utils.ts                — cn() helper (clsx + tailwind-merge)
   export-utils.ts         — Exportación a Excel/PDF
 hooks/                    — use-mobile.ts, use-toast.ts
-middleware.ts             — Protección de rutas via cookie lovepostal_auth
+middleware.ts             — Protección de rutas via cookie lovepostal_auth (PUBLIC_PATHS: login, register, forgot-password, reset-password)
 ```
 
 ## Comandos esenciales
@@ -105,9 +109,13 @@ docker run -p 3000:3000 guest-dashboard
 
 ### Autenticación
 - JWT en localStorage (`lovepostal_token`) + cookie indicadora (`lovepostal_auth=1`) para middleware Edge
-- `fetchAPI()` en `lib/api.ts` inyecta `Authorization: Bearer` automáticamente
+- `fetchAPI()` en `lib/api.ts` inyecta `Authorization: Bearer` automáticamente (soporta peticiones sin token)
 - Cualquier 401 limpia token y redirige a `/login`
-- Endpoints: `POST /api/v1/auth/login`, `POST /api/v1/auth/register`, `GET /api/v1/auth/me`
+- Rutas públicas (sin auth): `/login`, `/register`, `/forgot-password`, `/reset-password` (configuradas en `middleware.ts`)
+- Forgot/reset password usan `fetch()` directo (no `fetchAPI()`) ya que son endpoints públicos sin JWT
+- El forgot-password siempre muestra mensaje genérico (no revela si el email existe)
+- El reset-password lee el token desde `?token=` en la URL y lo envía en el body
+- Endpoints: `POST /api/v1/auth/login`, `POST /api/v1/auth/register`, `GET /api/v1/auth/me`, `POST /api/v1/auth/forgot-password`, `POST /api/v1/auth/reset-password`
 
 ### Variables de entorno
 - `NEXT_PUBLIC_API_URL` — URL del backend (se resuelve en BUILD TIME)
