@@ -109,6 +109,12 @@ export function LoginForm({
       </div>
 
       <p className="text-center text-sm text-muted-foreground">
+        <Link href="/forgot-password" className="text-primary hover:underline">
+          ¿Olvidaste tu contrasena?
+        </Link>
+      </p>
+
+      <p className="text-center text-sm text-muted-foreground">
         ¿No tienes cuenta?{' '}
         <Link href="/register" className="text-primary underline-offset-4 hover:underline">
           Regístrate
