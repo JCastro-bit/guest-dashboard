@@ -1,113 +1,149 @@
-# CLAUDE.md — LOVEPOSTAL Guest Dashboard
+---
+name: guest-dashboard-lovepostal
+description: Dashboard de gestión de invitados para bodas — frontend de LOVEPOSTAL
+version: "1.0.0"
+model: any
+tools: [Read, Edit, Write, Bash, Glob, Grep]
+tags: [nextjs, react, typescript, tailwindcss, shadcn, wedding-saas]
+---
 
-## Proyecto
-- **Nombre:** LOVEPOSTAL — Dashboard de Invitados de Boda
-- **Dominio:** lovepostal.studio (NO lovepostal.app)
-- **Subdominio app:** app.lovepostal.studio
-- **Stack:** Next.js 16 + React 19 + Tailwind CSS v4 + shadcn/ui + TypeScript
-- **Iconos:** Lucide React (línea fina, 16-20px)
-- **Animaciones:** Framer Motion
+Prioridad máxima: mantener la coherencia visual con el design system LOVEPOSTAL (variables CSS semánticas, nunca colores hardcodeados) y respetar el aislamiento multi-tenant en toda interacción con la API.
 
-## Comandos
-- `npm run dev` — Servidor de desarrollo (puerto 3001)
-- `npm run build` — Build de producción
-- `npm run lint` — ESLint
-- Backend API debe estar en `http://localhost:3000`
+## Contexto del proyecto
 
-## Paleta de Colores (CSS Variables HSL)
-- `--primary`: terracota #D4714E — `hsl(16 61% 57%)`
-- `--background`: crema claro #FDFAF6 — `hsl(30 67% 97%)`
-- `--foreground`: marrón oscuro #2D1B0E — `hsl(25 53% 12%)`
-- `--secondary`: crema arena #F5E6D3 — `hsl(34 63% 89%)`
-- `--destructive`: rojo #C0392B — `hsl(0 72% 51%)`
-- `--success`: verde #4A7C59 — `hsl(140 26% 39%)`
-- `--warning`: dorado #C9A96E — `hsl(38 42% 60%)`
-- `--info`: azul #5B7FA5 — `hsl(211 28% 50%)`
+LOVEPOSTAL es una plataforma B2C SaaS de invitaciones digitales para bodas (mercado México, foco Guadalajara). Este repo es el **frontend dashboard** donde parejas gestionan invitados, invitaciones, mesas y RSVPs.
 
-## Reglas de Estilo
-- NUNCA usar colores hardcodeados (hex, rgb, tailwind colors como text-red-600). Usar variables semánticas.
-- NUNCA usar `bg-white`. Usar `bg-card` o `bg-background`.
-- NUNCA usar text-gray-*, bg-slate-*, etc. Usar `text-muted-foreground`, `bg-muted`, etc.
-- Para estados de éxito: `text-success`, `bg-success/10`
-- Para advertencias: `text-warning`, `bg-warning/10`
-- Para errores/destructivo: `text-destructive`, `bg-destructive/10`
-- Para información: `text-info`, `bg-info/10`
-- Bordes: `rounded-lg` (0.5rem / 8px)
-- Sombras: cálidas con base marrón `rgba(45, 27, 14, 0.08)`
+- **Stack:** Next.js 16.0.3 · React 19.2.0 · TypeScript 5 · Tailwind CSS 4.1.9 · shadcn/ui (new-york) · Framer Motion · Zod 3.25
+- **Dominios:** app.lovepostal.studio (frontend) · api.lovepostal.studio (backend) · cdn.lovepostal.studio (assets)
+- **Infra:** VPS 76.13.97.90 · Docker (node:20-alpine, standalone output) · Traefik · Dokploy
+- **Precios:** Esencial $2,250 MXN / Premium $4,499 MXN
 
-## Tipografía
-- **Títulos (h1, h2):** Playfair Display → clase `font-serif`
-- **Body/UI:** Noto Sans → clase `font-sans`
-- Las fonts se cargan via `next/font/google` en `app/layout.tsx`
+## Estructura del proyecto
 
-## Logos (CDN)
-- Header light: `https://cdn.lovepostal.studio/logotipos/logo_lovepostal_6.webp`
-- Header dark: `https://cdn.lovepostal.studio/logotipos/logo_lovepostal_4.webp`
-- Footer: `https://cdn.lovepostal.studio/logotipos/logo_lovepostal_5.webp`
-
-## Estructura
 ```
 app/
-├── login/        — Página de login (sin sidebar)
-├── register/     — Página de registro (sin sidebar)
-├── (dashboard)/  — Route group: páginas protegidas (con sidebar/nav)
-│   ├── page.tsx  — Dashboard (ruta /)
-│   ├── guests/
-│   ├── invitations/
-│   └── tables/
+  layout.tsx              — Root layout (fonts, ThemeProvider, AuthProvider, Toaster)
+  globals.css             — Variables CSS del design system (light + dark)
+  login/page.tsx          — Login público (sin sidebar)
+  register/page.tsx       — Registro público (sin sidebar)
+  (dashboard)/            — Route group protegido (con sidebar/nav)
+    page.tsx              — Dashboard principal (stats)
+    guests/page.tsx       — Lista de invitados
+    invitations/          — CRUD invitaciones + detalle [id]
+    tables/               — CRUD mesas + detalle [id]
 components/
-├── auth-provider.tsx  — Context de autenticación + useAuth hook
-├── auth-guard.tsx     — Guard client-side para rutas protegidas
-├── auth-redirect.tsx  — Redirect para login/register si ya autenticado
-├── login-form.tsx     — Formulario de login
-├── register-form.tsx  — Formulario de registro
-├── ui/               — shadcn/ui components (no editar manualmente)
+  auth-provider.tsx       — Context de auth + hook useAuth()
+  auth-guard.tsx          — Guard client-side para rutas protegidas
+  auth-redirect.tsx       — Redirect si ya autenticado (login/register)
+  navigation.tsx          — Sidebar + header del dashboard
+  ui/                     — Componentes shadcn/ui (no editar manualmente)
 lib/
-├── auth.ts           — Utilidades de token (get/set/remove + cookie sync)
-├── api.ts            — API client con auth headers automáticos
-├── types.ts          — TypeScript types (incluye auth types)
-hooks/                — Custom hooks
-middleware.ts         — Protección de rutas via cookie indicadora
-public/               — Static assets
+  api.ts                  — Cliente API con auth headers automáticos (fetchAPI)
+  auth.ts                 — Token storage (localStorage + cookie indicadora)
+  types.ts                — Tipos TypeScript (Guest, Invitation, Table, Auth)
+  utils.ts                — cn() helper (clsx + tailwind-merge)
+  export-utils.ts         — Exportación a Excel/PDF
+hooks/                    — use-mobile.ts, use-toast.ts
+middleware.ts             — Protección de rutas via cookie lovepostal_auth
 ```
 
-## Convenciones
-- Componentes shadcn usan variables CSS semánticas — se actualizan automáticamente al cambiar el tema
-- Dark mode vía `next-themes` con `ThemeProvider` en layout
-- API client en `lib/api.ts` con `NEXT_PUBLIC_API_URL`
-- Tipos TypeScript en `lib/types.ts`
+## Comandos esenciales
 
-## Autenticación
+```bash
+npm run dev              # Servidor de desarrollo en puerto 3001
+npm run build            # Build de producción (standalone)
+npm run lint             # ESLint
+npm run start            # Servidor de producción
+```
 
-### Flujo
-1. Ruta protegida → middleware detecta falta de cookie `lovepostal_auth` → redirige a `/login?from=<ruta>`
-2. Login → backend retorna JWT + user → token en localStorage + cookie indicadora
-3. AuthProvider verifica token al cargar via `GET /api/v1/auth/me`
-4. `fetchAPI` inyecta `Authorization: Bearer <token>` automáticamente
-5. Cualquier 401 → token se limpia → redirige a /login
+**Docker:**
+```bash
+docker build --build-arg NEXT_PUBLIC_API_URL=https://api.lovepostal.studio -t guest-dashboard .
+docker run -p 3000:3000 guest-dashboard
+```
 
-### Token storage
-- JWT en localStorage (`lovepostal_token`)
-- Cookie indicadora (`lovepostal_auth=1`) solo para middleware Edge — NO contiene JWT
+**Testing:** N/A — no hay framework de tests configurado en este proyecto.
 
-### Endpoints consumidos
-- `POST /api/v1/auth/login`
-- `POST /api/v1/auth/register`
-- `GET /api/v1/auth/me`
+## Convenciones de código
 
-### Super Admin
-`user.role` disponible via `useAuth()`. Sin UI diferenciada por rol todavía.
+### Estilo y naming
+- Componentes: PascalCase, un componente por archivo, archivos kebab-case (`guest-table.tsx`)
+- Variables/funciones: camelCase. Tipos/interfaces: PascalCase
+- Path alias: `@/*` mapea a la raíz del proyecto
+- Iconos: Lucide React, 16-20px, línea fina
+- Formularios: react-hook-form + zod para validación
+- Notificaciones: sonner (toast)
 
-### Limitación conocida
-Server components llaman API sin token (no hay localStorage en servidor). Funciona porque rutas backend son públicas. Requiere cambio cuando backend proteja rutas (Fase 2).
+### Paleta de colores (variables CSS semánticas obligatorias)
+| Token | Uso | HSL |
+|-------|-----|-----|
+| `--primary` | Terracota, acciones principales | `hsl(16 61% 57%)` |
+| `--background` | Fondo crema | `hsl(30 67% 97%)` |
+| `--foreground` | Texto marrón oscuro | `hsl(25 53% 12%)` |
+| `--success` | Estados confirmados | `hsl(140 26% 39%)` |
+| `--destructive` | Errores, eliminar | `hsl(0 72% 51%)` |
+| `--warning` | Advertencias | `hsl(38 42% 60%)` |
+| `--info` | Información | `hsl(211 28% 50%)` |
 
-## Docker / Deploy (Dokploy)
-- **Dockerfile:** Multi-stage (deps → builder → runner), standalone output
-- **Base image:** node:20-alpine
-- **Container port:** 3000
-- **Build arg:** `NEXT_PUBLIC_API_URL=https://api.lovepostal.studio`
-- **NEXT_PUBLIC_* vars** se resuelven en BUILD TIME (cambiar requiere rebuild)
-- **Dominio:** app.lovepostal.studio (Traefik + Let's Encrypt)
-- **Dokploy config:** Build Type = Dockerfile, Container Port = 3000, HTTPS enabled
-- **Build local:** `docker build --build-arg NEXT_PUBLIC_API_URL=https://api.lovepostal.studio -t guest-dashboard .`
-- **Run local:** `docker run -p 3000:3000 guest-dashboard`
+### Tipografía
+- Títulos (h1, h2): `font-serif` (Playfair Display)
+- Body/UI: `font-sans` (Noto Sans)
+
+### Patrones a evitar
+- Colores hardcodeados: nunca `bg-white`, `text-gray-*`, `text-red-600`, hex o rgb directo
+- Usar siempre variables semánticas: `bg-card`, `text-muted-foreground`, `bg-destructive/10`
+- No editar archivos dentro de `components/ui/` manualmente (generados por shadcn)
+- No usar `@ts-ignore` sin justificación documentada en comentario adyacente
+
+### Autenticación
+- JWT en localStorage (`lovepostal_token`) + cookie indicadora (`lovepostal_auth=1`) para middleware Edge
+- `fetchAPI()` en `lib/api.ts` inyecta `Authorization: Bearer` automáticamente
+- Cualquier 401 limpia token y redirige a `/login`
+- Endpoints: `POST /api/v1/auth/login`, `POST /api/v1/auth/register`, `GET /api/v1/auth/me`
+
+### Variables de entorno
+- `NEXT_PUBLIC_API_URL` — URL del backend (se resuelve en BUILD TIME)
+- `NEXT_PUBLIC_APP_URL` — URL del frontend (metadata, OG images)
+- Para desarrollo local crear `.env.local` (nunca commitear)
+
+## Flujo de trabajo
+
+- **Branches:** `feature/<slug>`, `bugfix/<slug>` desde `main`
+- **Commits:** Conventional Commits en inglés (`feat:`, `fix:`, `chore:`, `refactor:`, `docs:`)
+- **PR:** título < 70 chars, descripción con resumen y test plan
+- **Principios:** SOLID, YAGNI, KISS — no sobreingeniería
+
+## Testing
+
+N/A — no hay framework de tests configurado. Al agregar tests, usar Jest + React Testing Library con estructura AAA (Arrange, Act, Assert).
+
+## Límites y seguridad
+
+### SIEMPRE hacer (sin preguntar)
+- Usar variables CSS semánticas para colores
+- Tipar todo con TypeScript (strict mode habilitado)
+- Validar inputs de usuario con Zod antes de enviar a la API
+- Usar `fetchAPI()` de `lib/api.ts` para todas las llamadas al backend
+- Ejecutar `npm run lint` antes de commitear
+
+### PREGUNTAR primero (requiere confirmación)
+- Agregar dependencias nuevas al proyecto
+- Modificar `middleware.ts` o flujo de autenticación
+- Cambios en `app/layout.tsx` o `globals.css`
+- Push a `main` o crear PRs
+- Modificar la configuración de Docker o deploy
+
+### NUNCA hacer (prohibido absoluto)
+- Modificar `.env*` o archivos con credenciales
+- Hard delete en BD (solo soft delete con `deletedAt`)
+- Queries sin filtro de tenant en contexto multi-tenant
+- Commitear secrets, tokens o API keys
+- Ignorar errores TypeScript con `@ts-ignore` sin justificación documentada
+- Ejecutar comandos destructivos contra la base de datos de producción
+- Usar colores hardcodeados (hex, rgb, clases Tailwind como `text-red-600`, `bg-white`)
+- Editar manualmente archivos en `components/ui/` (usar `npx shadcn@latest add`)
+
+### Archivos protegidos (no modificar sin confirmación explícita)
+- `.env*`, `middleware.ts`, `app/layout.tsx`, `app/globals.css`
+- `next.config.mjs`, `Dockerfile`, `package.json`, `tsconfig.json`
+- `lib/auth.ts`, `components/auth-provider.tsx`
