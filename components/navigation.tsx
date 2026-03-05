@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useSidebar } from "@/components/sidebar-provider"
 import { useTheme } from "next-themes"
 import { useAuth } from "@/components/auth-provider"
+import { PLAN_LABELS } from "@/lib/plan"
 
 const routes = [
   {
@@ -211,6 +212,12 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
           <div className="px-3 py-2 mb-2">
             <p className="text-sm font-medium truncate text-sidebar-foreground">{user.name || 'Usuario'}</p>
             <p className="text-xs text-sidebar-foreground/70 truncate">{user.email}</p>
+            <span className="text-xs text-sidebar-foreground/70">
+              Plan {PLAN_LABELS[user.plan ?? 'free']}
+              {user.planStatus === 'active' && (
+                <span className="ml-1 text-success">●</span>
+              )}
+            </span>
           </div>
         )}
         <div className="space-y-1">

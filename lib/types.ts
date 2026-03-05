@@ -132,11 +132,16 @@ export interface UpdateTableRequest {
 
 // ==================== Auth Types ====================
 
+export type Plan = 'free' | 'esencial' | 'premium'
+export type PlanStatus = 'inactive' | 'active' | 'expired'
+
 export interface AuthUser {
   id: string
   email: string
   name: string | null
   role: 'user' | 'admin'
+  plan: Plan
+  planStatus: PlanStatus
 }
 
 export interface AuthResponse {

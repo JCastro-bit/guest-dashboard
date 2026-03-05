@@ -12,6 +12,7 @@ interface AuthContextType {
   login: (data: LoginRequest) => Promise<void>
   register: (data: RegisterRequest) => Promise<void>
   logout: () => void
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -39,6 +40,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: profile.email,
           name: profile.name,
           role: normalizedRole,
+          plan: profile.plan ?? 'free',
+          planStatus: profile.planStatus ?? 'inactive',
         })
       })
       .catch((error) => {
@@ -62,6 +65,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(response.user)
   }, [])
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const profile = await getMe()
+      const normalizedRole: 'user' | 'admin' =
+        profile.role === 'admin' || profile.role === 'user' ? profile.role : 'user'
+      setUser({
+        id: profile.id,
+        email: profile.email,
+        name: profile.name,
+        role: normalizedRole,
+        plan: profile.plan ?? 'free',
+        planStatus: profile.planStatus ?? 'inactive',
+      })
+    } catch (error) {
+      console.error('Failed to refresh user:', error)
+    }
+  }, [])
+
   const logout = useCallback(() => {
     removeToken()
     setUser(null)
@@ -77,6 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         register,
         logout,
+        refreshUser,
       }}
     >
       {children}

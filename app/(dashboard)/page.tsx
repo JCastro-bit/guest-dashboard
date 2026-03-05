@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
+import { UpgradeBanner } from "@/components/upgrade-banner"
 import type { DashboardStats, Invitation } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -52,6 +53,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      <UpgradeBanner message="Activa tu plan para comenzar a crear invitaciones y gestionar tu boda." />
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-3xl font-serif font-bold tracking-tight">Tablero</h2>
         <div className="flex items-center gap-2">
