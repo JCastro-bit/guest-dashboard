@@ -20,6 +20,19 @@ import type {
 // Get API URL from environment variable
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
 
+// User-friendly error messages by HTTP status code
+const ERROR_MESSAGES: Record<number, string> = {
+  400: "Los datos enviados no son validos.",
+  401: "Tu sesion ha expirado. Inicia sesion nuevamente.",
+  403: "No tienes permiso para realizar esta accion.",
+  404: "El recurso solicitado no existe.",
+  409: "Ya existe un registro con ese nombre.",
+  422: "Los datos no cumplen con el formato requerido.",
+  429: "Demasiadas solicitudes. Espera un momento.",
+  500: "Error del servidor. Intenta mas tarde.",
+  503: "Servicio no disponible temporalmente.",
+}
+
 // Prevents multiple simultaneous 401-triggered redirects.
 // Resets automatically on page navigation since it's module-level.
 let isRedirectingToLogin = false
@@ -66,7 +79,11 @@ async function fetchAPI<T>(
       }
 
       const errorData = await response.json().catch(() => null)
-      const message = errorData?.error?.message || errorData?.message || `API Error (${response.status})`
+      const message =
+        errorData?.error?.message ||
+        errorData?.message ||
+        ERROR_MESSAGES[response.status] ||
+        `Error inesperado (codigo: ${response.status}). Contacta a soporte si persiste.`
       throw new Error(message)
     }
 
@@ -77,11 +94,11 @@ async function fetchAPI<T>(
 
     return await response.json()
   } catch (error) {
-    if (error instanceof Error && error.message.includes('API Error')) {
+    if (error instanceof Error && error.message !== 'Failed to fetch') {
       throw error
     }
     console.error(`API request failed: ${url}`, error)
-    throw error
+    throw new Error("No se pudo conectar con el servidor. Verifica tu conexion a internet.")
   }
 }
 

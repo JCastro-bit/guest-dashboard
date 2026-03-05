@@ -4,6 +4,7 @@ import { getInvitationsWithGuests } from "@/lib/api"
 import { CreateInvitationModal } from "@/components/create-invitation-modal"
 import type { Metadata } from "next"
 import { InvitationsContainer } from "@/components/invitations-container"
+import type { Invitation } from "@/lib/types"
 
 export const metadata: Metadata = {
   title: "Invitaciones",
@@ -21,7 +22,13 @@ export const metadata: Metadata = {
 }
 
 export default async function InvitationsPage() {
-  const invitations = await getInvitationsWithGuests()
+  let invitations: Invitation[] = []
+
+  try {
+    invitations = await getInvitationsWithGuests()
+  } catch (error) {
+    console.error("Error loading invitations:", error)
+  }
 
   return (
     <div className="space-y-8">

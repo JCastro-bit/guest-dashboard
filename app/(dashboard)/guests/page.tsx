@@ -3,10 +3,12 @@ export const dynamic = 'force-dynamic'
 import { getInvitationsWithGuests } from "@/lib/api"
 import { GuestTable } from "@/components/guest-table"
 import { Button } from "@/components/ui/button"
-import { Filter } from "lucide-react"
+import { Filter, Users } from "lucide-react"
 import { ExportGuestsButton } from "@/components/export-guests-button"
 import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
+import Link from "next/link"
+import type { Guest } from "@/lib/types"
 
 export const metadata: Metadata = {
   title: "Lista de Invitados",
@@ -24,9 +26,14 @@ export const metadata: Metadata = {
 }
 
 export default async function GuestsPage() {
-  const invitations = await getInvitationsWithGuests()
-  // Flatten invitations to get all guests
-  const guests = invitations.flatMap((inv) => inv.guests || [])
+  let guests: Guest[] = []
+
+  try {
+    const invitations = await getInvitationsWithGuests()
+    guests = invitations.flatMap((inv) => inv.guests || [])
+  } catch (error) {
+    console.error("Error loading guests:", error)
+  }
 
   return (
     <div className="space-y-8">
@@ -45,7 +52,24 @@ export default async function GuestsPage() {
         </div>
       </div>
 
-      <GuestTable guests={guests} />
+      {guests.length > 0 ? (
+        <GuestTable guests={guests} />
+      ) : (
+        <div className="flex flex-col items-center justify-center min-h-[300px] gap-4 p-8 text-center">
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted/50">
+            <Users className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <div>
+            <h3 className="text-base font-semibold text-foreground mb-1">Sin invitados aun</h3>
+            <p className="text-sm text-muted-foreground max-w-xs">
+              Agrega tu primer invitado creando una invitacion.
+            </p>
+          </div>
+          <Button asChild className="mt-2">
+            <Link href="/invitations">Crear invitacion</Link>
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

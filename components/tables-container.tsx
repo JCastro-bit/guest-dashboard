@@ -6,6 +6,7 @@ import { SearchButton } from "@/components/search-button"
 import { TablesGrid } from "@/components/tables-grid"
 import { TablesTable } from "@/components/tables-table"
 import { ViewToggle } from "@/components/view-toggle"
+import { EmptyState, EMPTY_STATES } from "@/components/ui-states"
 
 interface TablesContainerProps {
   tables: Table[]
@@ -13,6 +14,10 @@ interface TablesContainerProps {
 
 export function TablesContainer({ tables }: TablesContainerProps) {
   const [view, setView] = useState<"grid" | "table">("grid")
+
+  if (tables.length === 0) {
+    return <EmptyState {...EMPTY_STATES.tables} />
+  }
 
   return (
     <>

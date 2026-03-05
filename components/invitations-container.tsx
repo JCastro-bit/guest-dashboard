@@ -7,6 +7,7 @@ import { ViewToggle } from "@/components/view-toggle"
 import { InvitationsView } from "@/components/invitations-view"
 import { StatusFilterComponent, type StatusFilter } from "@/components/status-filter"
 import { getInvitationStatus } from "@/lib/utils"
+import { EmptyState, EMPTY_STATES } from "@/components/ui-states"
 
 interface InvitationsContainerProps {
   invitations: Invitation[]
@@ -27,6 +28,10 @@ export function InvitationsContainer({ invitations }: InvitationsContainerProps)
       return status === statusFilter
     })
   }, [invitations, statusFilter])
+
+  if (invitations.length === 0) {
+    return <EmptyState {...EMPTY_STATES.invitations} />
+  }
 
   return (
     <>
