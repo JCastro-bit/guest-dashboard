@@ -49,21 +49,21 @@ export default async function DashboardPage() {
         <StatCard title="Total Invitados" value={stats.totalGuests} icon={Users} description="En todas las invitaciones" />
         <StatCard
           title="Confirmados"
-          value={stats.confirmedGuests}
+          value={stats.confirmedGuests ?? 0}
           icon={CheckCircle}
           description="Invitados asistentes"
           className="border-l-4 border-l-success"
         />
         <StatCard
           title="Pendientes"
-          value={stats.pendingGuests}
+          value={stats.pendingGuests ?? 0}
           icon={Clock}
           description="En espera de respuesta"
           className="border-l-4 border-l-warning"
         />
         <StatCard
           title="Rechazados"
-          value={stats.declinedGuests}
+          value={stats.declinedGuests ?? 0}
           icon={XCircle}
           description="No asistirán"
           className="border-l-4 border-l-destructive"

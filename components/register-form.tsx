@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth-provider'
 import { cn } from '@/lib/utils'
@@ -11,36 +13,45 @@ import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 
+const registerSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email('Email inválido'),
+  password: z.string().min(8, 'Mínimo 8 caracteres'),
+  confirmPassword: z.string().min(1, 'Confirma tu contraseña'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Las contraseñas no coinciden',
+  path: ['confirmPassword'],
+})
+
+type RegisterValues = z.infer<typeof registerSchema>
+
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const {
+    register: registerField,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterValues>({
+    resolver: zodResolver(registerSchema),
+  })
   const { register } = useAuth()
   const router = useRouter()
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (isLoading) return
-
-    setIsLoading(true)
+  async function onSubmit(data: RegisterValues) {
     try {
-      await register({ email, password, name: name || undefined })
+      await register({ email: data.email, password: data.password, name: data.name || undefined })
       toast.success('¡Cuenta creada exitosamente!')
       router.push('/')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Error al crear la cuenta'
       toast.error(message)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
+    <form onSubmit={handleSubmit(onSubmit)} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-serif font-bold">Crea tu cuenta</h1>
         <p className="text-muted-foreground text-sm text-balance">
@@ -55,10 +66,9 @@ export function RegisterForm({
             id="name"
             type="text"
             placeholder="Tu nombre"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
             autoComplete="name"
-            disabled={isLoading}
+            disabled={isSubmitting}
+            {...registerField('name')}
           />
         </div>
 
@@ -68,12 +78,13 @@ export function RegisterForm({
             id="email"
             type="email"
             placeholder="tu@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
             autoComplete="email"
-            disabled={isLoading}
+            disabled={isSubmitting}
+            {...registerField('email')}
           />
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="grid gap-2">
@@ -81,18 +92,33 @@ export function RegisterForm({
           <Input
             id="password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={8}
             autoComplete="new-password"
-            disabled={isLoading}
+            disabled={isSubmitting}
+            {...registerField('password')}
           />
-          <p className="text-xs text-muted-foreground">Mínimo 8 caracteres</p>
+          {errors.password ? (
+            <p className="text-sm text-destructive">{errors.password.message}</p>
+          ) : (
+            <p className="text-xs text-muted-foreground">Mínimo 8 caracteres</p>
+          )}
         </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? (
+        <div className="grid gap-2">
+          <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            disabled={isSubmitting}
+            {...registerField('confirmPassword')}
+          />
+          {errors.confirmPassword && (
+            <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+          )}
+        </div>
+
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Creando cuenta...

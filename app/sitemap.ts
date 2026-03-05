@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic invitation pages
   const invitationPages = invitations.map((invitation) => ({
     url: `${baseUrl}/invitations/${invitation.id}`,
-    lastModified: new Date(invitation.updatedAt || invitation.createdAt),
+    lastModified: new Date(invitation.createdAt),
     changeFrequency: "weekly" as const,
     priority: 0.6,
   }))

@@ -14,9 +14,13 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
 
   // Load sidebar state from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem("sidebar-collapsed")
-    if (saved !== null) {
-      setIsCollapsed(JSON.parse(saved))
+    try {
+      const saved = localStorage.getItem("sidebar-collapsed")
+      if (saved !== null) {
+        setIsCollapsed(JSON.parse(saved))
+      }
+    } catch {
+      // corrupted localStorage value, keep default
     }
   }, [])
 

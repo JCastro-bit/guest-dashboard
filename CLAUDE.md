@@ -1,7 +1,7 @@
 ---
 name: guest-dashboard-lovepostal
 description: Dashboard de gestión de invitados para bodas — frontend de LOVEPOSTAL
-version: "1.0.0"
+version: "0.1.0"
 model: any
 tools: [Read, Edit, Write, Bash, Glob, Grep]
 tags: [nextjs, react, typescript, tailwindcss, shadcn, wedding-saas]
@@ -26,7 +26,11 @@ app/
   globals.css             — Variables CSS del design system (light + dark)
   login/page.tsx          — Login público (sin sidebar)
   register/page.tsx       — Registro público (sin sidebar)
+  opengraph-image.tsx     — OG image generation
+  robots.ts               — Robots.txt metadata
+  sitemap.ts              — Sitemap metadata
   (dashboard)/            — Route group protegido (con sidebar/nav)
+    layout.tsx            — AuthGuard + SidebarProvider + Navigation (layout protegido)
     page.tsx              — Dashboard principal (stats)
     guests/page.tsx       — Lista de invitados
     invitations/          — CRUD invitaciones + detalle [id]
@@ -35,7 +39,11 @@ components/
   auth-provider.tsx       — Context de auth + hook useAuth()
   auth-guard.tsx          — Guard client-side para rutas protegidas
   auth-redirect.tsx       — Redirect si ya autenticado (login/register)
+  login-form.tsx          — Formulario login con validación Zod
+  register-form.tsx       — Formulario registro con validación Zod
   navigation.tsx          — Sidebar + header del dashboard
+  sidebar-provider.tsx    — Context de sidebar (collapsed state)
+  theme-provider.tsx      — Wrapper de next-themes
   ui/                     — Componentes shadcn/ui (no editar manualmente)
 lib/
   api.ts                  — Cliente API con auth headers automáticos (fetchAPI)
@@ -115,7 +123,7 @@ docker run -p 3000:3000 guest-dashboard
 
 ## Testing
 
-N/A — no hay framework de tests configurado. Al agregar tests, usar Jest + React Testing Library con estructura AAA (Arrange, Act, Assert).
+N/A — no hay framework de tests configurado. Al agregar tests, usar Vitest + React Testing Library (consistente con guests-api) con estructura AAA (Arrange, Act, Assert).
 
 ## Límites y seguridad
 
