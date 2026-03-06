@@ -41,12 +41,21 @@ export const metadata: Metadata = {
     siteName: "LOVEPOSTAL",
     locale: "es_MX",
     type: "website",
+    images: [
+      {
+        url: "https://cdn.lovepostal.studio/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "LOVEPOSTAL — Invitaciones digitales para tu boda",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "LOVEPOSTAL — Dashboard de Invitados",
     description:
       "Gestiona tu lista de invitados y confirmaciones de boda con LOVEPOSTAL. Seguimiento de RSVPs, invitaciones personalizadas y organización de tu día especial.",
+    images: ["https://cdn.lovepostal.studio/og-image.jpg"],
   },
   robots: {
     index: true,
