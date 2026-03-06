@@ -18,6 +18,7 @@ export interface Guest {
 export interface Invitation {
   id: string
   name: string
+  slug: string | null
   tableId: string | null
   message: string | null
   eventDate: string | null

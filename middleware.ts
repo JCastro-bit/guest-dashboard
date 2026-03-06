@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const PUBLIC_PATHS = ['/login', '/register', '/forgot-password', '/reset-password']
+const PUBLIC_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/i', '/welcome']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -18,6 +18,9 @@ export function middleware(request: NextRequest) {
   const hasAuthIndicator = request.cookies.get('lovepostal_auth')
 
   if (!hasAuthIndicator) {
+    if (pathname === '/') {
+      return NextResponse.redirect(new URL('/welcome', request.url))
+    }
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('from', pathname)
     return NextResponse.redirect(loginUrl)
