@@ -16,7 +16,7 @@ export default function RegisterPage() {
             <a href="https://lovepostal.studio" className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://cdn.lovepostal.studio/logotipos/logo_lovepostal_6.webp"
+                src="https://cdn.lovepostal.studio/logotipos/logo_lovepostal_4.webp"
                 alt="LOVEPOSTAL"
                 width={160}
                 height={40}
