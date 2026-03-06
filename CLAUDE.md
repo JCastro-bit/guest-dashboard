@@ -1,17 +1,8 @@
----
-name: guest-dashboard-lovepostal
-description: Dashboard de gestión de invitados para bodas — frontend de LOVEPOSTAL
-version: "0.1.0"
-model: any
-tools: [Read, Edit, Write, Bash, Glob, Grep]
-tags: [nextjs, react, typescript, tailwindcss, shadcn, wedding-saas]
----
-
 Prioridad máxima: mantener la coherencia visual con el design system LOVEPOSTAL (variables CSS semánticas, nunca colores hardcodeados) y respetar el aislamiento multi-tenant en toda interacción con la API.
 
 ## Contexto del proyecto
 
-LOVEPOSTAL es una plataforma B2C SaaS de invitaciones digitales para bodas (mercado México, foco Guadalajara). Este repo es el **frontend dashboard** donde parejas gestionan invitados, invitaciones, mesas y RSVPs.
+LOVEPOSTAL es una plataforma B2C SaaS de invitaciones digitales para bodas (mercado México, foco Guadalajara). Este repo es el **frontend dashboard** donde parejas gestionan invitados, invitaciones, mesas y RSVPs, más las páginas públicas (welcome, invitaciones por slug).
 
 - **Stack:** Next.js 16.0.3 · React 19.2.0 · TypeScript 5 · Tailwind CSS 4.1.9 · shadcn/ui (new-york) · Framer Motion · Zod 3.25
 - **Dominios:** app.lovepostal.studio (frontend) · api.lovepostal.studio (backend) · cdn.lovepostal.studio (assets)
@@ -23,51 +14,56 @@ LOVEPOSTAL es una plataforma B2C SaaS de invitaciones digitales para bodas (merc
 ```
 app/
   layout.tsx              — Root layout (fonts, ThemeProvider, AuthProvider, Toaster)
-  error.tsx               — Error boundary global (fallback para errores fuera del dashboard)
+  error.tsx               — Error boundary global
   not-found.tsx           — Página 404 global
   globals.css             — Variables CSS del design system (light + dark)
   login/page.tsx          — Login público (sin sidebar)
   register/page.tsx       — Registro público (sin sidebar)
   forgot-password/page.tsx — Solicitar reset de contraseña (público)
   reset-password/page.tsx  — Restablecer contraseña con token (público)
-  opengraph-image.tsx     — OG image generation
+  welcome/page.tsx        — Landing pública para usuarios no autenticados
+  i/[slug]/page.tsx       — Vista pública de invitación por slug (con RSVP)
+  i/[slug]/not-found.tsx  — 404 para slugs inexistentes
   robots.ts               — Robots.txt metadata
-  sitemap.ts              — Sitemap metadata
+  sitemap.ts              — Sitemap metadata (incluye invitaciones públicas)
   (dashboard)/            — Route group protegido (con sidebar/nav)
-    layout.tsx            — AuthGuard + SidebarProvider + Navigation (layout protegido)
-    error.tsx             — Error boundary del dashboard (reintentar)
+    layout.tsx            — AuthGuard + SidebarProvider + Navigation
+    error.tsx             — Error boundary del dashboard
+    loading.tsx           — Loading skeleton del dashboard
     page.tsx              — Dashboard principal (stats + UpgradeBanner + ErrorAlert)
-    guests/page.tsx       — Lista de invitados (con ErrorAlert si falla carga)
-    invitations/          — CRUD invitaciones + detalle [id] (crear gateado por PlanGate, ErrorAlert)
-    tables/               — CRUD mesas + detalle [id] (crear gateado por PlanGate, ErrorAlert)
-    upgrade/page.tsx      — Página de selección de plan (Esencial / Premium)
-    upgrade/success/      — Pago exitoso (polling con feedback visual de activación)
-    upgrade/failure/      — Pago fallido
-    upgrade/pending/      — Pago pendiente
+    guests/               — Lista de invitados (con loading skeleton y ErrorAlert)
+    invitations/          — CRUD invitaciones + detalle [id] (crear gateado por PlanGate)
+    tables/               — CRUD mesas + detalle [id] (crear gateado por PlanGate)
+    upgrade/              — Selección de plan + success/failure/pending
 components/
   auth-provider.tsx       — Context de auth + hook useAuth()
   auth-guard.tsx          — Guard client-side para rutas protegidas
   auth-redirect.tsx       — Redirect si ya autenticado (login/register)
   login-form.tsx          — Formulario login con validación Zod
   register-form.tsx       — Formulario registro con validación Zod
-  forgot-password-form.tsx — Formulario forgot-password (estados: idle/loading/success)
-  reset-password-form.tsx  — Formulario reset-password (estados: idle/loading/success/error)
-  upgrade-banner.tsx      — Banner de upgrade (self-contained, lee useAuth internamente)
-  plan-gate.tsx           — Overlay de bloqueo para acciones de escritura sin plan activo
-  error-alert.tsx         — Banner inline reutilizable para errores de carga (con botón reintentar)
-  navigation.tsx          — Sidebar + header del dashboard (incluye badge de plan)
+  forgot-password-form.tsx — Formulario forgot-password
+  reset-password-form.tsx  — Formulario reset-password
+  upgrade-banner.tsx      — Banner de upgrade (self-contained)
+  plan-gate.tsx           — Overlay de bloqueo para acciones sin plan activo
+  error-alert.tsx         — Banner inline reutilizable para errores de carga
+  navigation.tsx          — Sidebar + header del dashboard (badge de plan)
   sidebar-provider.tsx    — Context de sidebar (collapsed state)
-  theme-provider.tsx      — Wrapper de next-themes
+  search-provider.tsx     — Context de búsqueda global (Cmd+K)
+  search-command.tsx      — Modal de búsqueda con command palette
+  invitation-public/      — Componentes de vista pública de invitación (hero, location, rsvp)
   ui/                     — Componentes shadcn/ui (no editar manualmente)
 lib/
   api.ts                  — Cliente API con auth headers automáticos (fetchAPI, createPaymentPreference)
   auth.ts                 — Token storage (localStorage + cookie indicadora)
-  types.ts                — Tipos TypeScript (Guest, Invitation, Table, Auth, Plan, PlanStatus)
+  types.ts                — Tipos TypeScript (Guest, Invitation con slug, Table, Auth, Plan, PlanStatus)
   plan.ts                 — Helpers de plan (canWrite, isPlanActive, hasQrAccess, PLAN_LABELS, PLAN_PRICES)
   utils.ts                — cn() helper (clsx + tailwind-merge)
   export-utils.ts         — Exportación a Excel/PDF
-hooks/                    — use-mobile.ts, use-toast.ts
-middleware.ts             — Protección de rutas via cookie lovepostal_auth (PUBLIC_PATHS: login, register, forgot-password, reset-password)
+hooks/
+  use-mobile.ts           — Detección responsive
+  use-toast.ts            — Hook para sonner toast
+  use-async.ts            — Hook para operaciones async con loading/error state
+proxy.ts                  — Protección de rutas via cookie lovepostal_auth (antes middleware.ts)
 ```
 
 ## Comandos esenciales
@@ -112,17 +108,31 @@ docker run -p 3000:3000 guest-dashboard
 - Títulos (h1, h2): `font-serif` (Playfair Display)
 - Body/UI: `font-sans` (Noto Sans)
 
+### Logos CDN
+- Páginas públicas (login, register, welcome, forgot/reset-password): `logo_lovepostal_4.webp`
+- Navigation sidebar (collapsed): `logo_lovepostal_6.webp` (isotipo)
+- OG image: `cdn.lovepostal.studio/og-image.jpg`
+
 ### Patrones a evitar
 - Colores hardcodeados: nunca `bg-white`, `text-gray-*`, `text-red-600`, hex o rgb directo
 - Usar siempre variables semánticas: `bg-card`, `text-muted-foreground`, `bg-destructive/10`
 - No editar archivos dentro de `components/ui/` manualmente (generados por shadcn)
 - No usar `@ts-ignore` sin justificación documentada en comentario adyacente
 
+### Proxy (antes Middleware)
+
+Next.js 16 renombró `middleware.ts` → `proxy.ts` y `export function middleware` → `export function proxy`.
+
+- Cookie indicadora `lovepostal_auth` — presencia indica sesión activa (no valida JWT, solo UX)
+- **PUBLIC_PATHS:** `/login`, `/register`, `/forgot-password`, `/reset-password`, `/i/`, `/welcome`
+- **IMPORTANTE:** usar `/i/` (con trailing slash) para que `startsWith` no matchee `/invitations` u otras rutas `/i*`
+- Usuarios no autenticados en `/` → redirect a `/welcome`
+- Usuarios no autenticados en rutas protegidas → redirect a `/login?from=<pathname>`
+
 ### Autenticación
-- JWT en localStorage (`lovepostal_token`) + cookie indicadora (`lovepostal_auth=1`) para middleware Edge
+- JWT en localStorage (`lovepostal_token`) + cookie indicadora (`lovepostal_auth=1`) para proxy Edge
 - `fetchAPI()` en `lib/api.ts` inyecta `Authorization: Bearer` automáticamente (soporta peticiones sin token)
 - Cualquier 401 limpia token y redirige a `/login`
-- Rutas públicas (sin auth): `/login`, `/register`, `/forgot-password`, `/reset-password` (configuradas en `middleware.ts`)
 - Forgot/reset password usan `fetch()` directo (no `fetchAPI()`) ya que son endpoints públicos sin JWT
 - El forgot-password siempre muestra mensaje genérico (no revela si el email existe)
 - El reset-password lee el token desde `?token=` en la URL y lo envía en el body
@@ -135,20 +145,22 @@ docker run -p 3000:3000 guest-dashboard
 - Helpers en `lib/plan.ts`: `canWrite()` (plan activo y no free), `isPlanActive()`, `hasQrAccess()` (solo premium)
 - **Plan gate (client-side UX, no seguridad):** `PlanGate` bloquea visualmente botones de crear; `UpgradeBanner` muestra banner en dashboard
 - Ambos componentes son self-contained: leen de `useAuth()` internamente, no requieren props de plan
-- **Upgrade flow:** `/upgrade` muestra cards de Esencial ($2,250) y Premium ($4,499) → click llama `createPaymentPreference()` via `fetchAPI` → redirige a MercadoPago `initPoint` (producción) o `sandboxInitPoint` (desarrollo)
-- **Resultado de pago:** MercadoPago redirige a `/upgrade/success`, `/upgrade/failure` o `/upgrade/pending`
+- **Upgrade flow:** `/upgrade` → `createPaymentPreference()` → MercadoPago → `/upgrade/success|failure|pending`
 - Success page hace auto-refresh (5 intentos c/3s) de `refreshUser()` para detectar activación del plan
-- Endpoint: `POST /api/v1/payments/create-preference` (body: `{ plan }`, respuesta: `{ initPoint, sandboxInitPoint }`)
+
+### Vista pública de invitación (`/i/[slug]`)
+- Ruta pública, no requiere autenticación
+- Llama a `GET /api/v1/public/invitations/:slug` para datos de la invitación
+- RSVP via `PATCH /api/v1/public/invitations/:slug/rsvp`
+- Componentes en `components/invitation-public/` (hero, location, rsvp-section)
 
 ### Manejo de errores
-- **`fetchAPI()` (lib/api.ts):** Traduce códigos HTTP a mensajes en español user-friendly (400, 401, 403, 404, 409, 422, 429, 500, 503). Errores de red ("Failed to fetch") se convierten en "No se pudo conectar con el servidor."
-- **401 global:** Cualquier respuesta 401 limpia el token y redirige a `/login` automáticamente (evita bucles en rutas de auth)
-- **Server components (páginas):** Usan `Promise.allSettled` o try/catch; si falla la carga, muestran `<ErrorAlert />` inline con botón "Reintentar" (router.refresh). Nunca muestran errores técnicos al usuario.
-- **Client components (modals/forms):** Usan `toast.error()` con el mensaje del Error capturado (que ya viene en español desde `fetchAPI`). Formularios con react-hook-form muestran errores de validación Zod inline.
-- **Error boundaries:** `app/error.tsx` (global) y `app/(dashboard)/error.tsx` (dashboard) capturan errores no manejados con UI de "Algo salio mal" + botón reintentar.
-- **404:** `app/not-found.tsx` (global) + `invitations/[id]/not-found.tsx` y `tables/[id]/not-found.tsx` para detalle no encontrado.
-- **Componente `ErrorAlert`:** Banner reutilizable (`components/error-alert.tsx`) para errores de carga en server pages. Props: `title`, `message`, `retry` (boolean).
-- **Upgrade success:** Polling con feedback visual — muestra spinner mientras detecta activación, mensaje claro si el polling agota intentos.
+- **`fetchAPI()` (lib/api.ts):** Traduce códigos HTTP a mensajes en español user-friendly (400, 401, 403, 404, 409, 422, 429, 500, 503). Errores de red → "No se pudo conectar con el servidor."
+- **401 global:** Limpia token y redirige a `/login` automáticamente
+- **Server components:** `Promise.allSettled` o try/catch; `<ErrorAlert />` inline con "Reintentar"
+- **Client components:** `toast.error()` con mensaje del Error (ya en español desde `fetchAPI`)
+- **Error boundaries:** `app/error.tsx` (global) y `app/(dashboard)/error.tsx` (dashboard)
+- **404:** `app/not-found.tsx` (global) + `invitations/[id]/not-found.tsx`, `tables/[id]/not-found.tsx`, `i/[slug]/not-found.tsx`
 
 ### Variables de entorno
 - `NEXT_PUBLIC_API_URL` — URL del backend (se resuelve en BUILD TIME)
@@ -172,12 +184,12 @@ N/A — no hay framework de tests configurado. Al agregar tests, usar Vitest + R
 - Usar variables CSS semánticas para colores
 - Tipar todo con TypeScript (strict mode habilitado)
 - Validar inputs de usuario con Zod antes de enviar a la API
-- Usar `fetchAPI()` de `lib/api.ts` para todas las llamadas al backend
+- Usar `fetchAPI()` de `lib/api.ts` para todas las llamadas al backend autenticadas
 - Ejecutar `npm run lint` antes de commitear
 
 ### PREGUNTAR primero (requiere confirmación)
 - Agregar dependencias nuevas al proyecto
-- Modificar `middleware.ts` o flujo de autenticación
+- Modificar `proxy.ts` o flujo de autenticación
 - Cambios en `app/layout.tsx` o `globals.css`
 - Push a `main` o crear PRs
 - Modificar la configuración de Docker o deploy
@@ -193,6 +205,6 @@ N/A — no hay framework de tests configurado. Al agregar tests, usar Vitest + R
 - Editar manualmente archivos en `components/ui/` (usar `npx shadcn@latest add`)
 
 ### Archivos protegidos (no modificar sin confirmación explícita)
-- `.env*`, `middleware.ts`, `app/layout.tsx`, `app/globals.css`
+- `.env*`, `proxy.ts`, `app/layout.tsx`, `app/globals.css`
 - `next.config.mjs`, `Dockerfile`, `package.json`, `tsconfig.json`
 - `lib/auth.ts`, `components/auth-provider.tsx`
