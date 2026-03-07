@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { getInvitationsWithGuests } from "@/lib/api"
+import { getInvitationsWithGuests, getStats } from "@/lib/api"
 import { GuestTable } from "@/components/guest-table"
 import { Button } from "@/components/ui/button"
 import { Filter, Users } from "lucide-react"
@@ -30,11 +30,26 @@ export const metadata: Metadata = {
 
 export default async function GuestsPage() {
   let guests: Guest[] = []
+  let totalGuests = 0
   let hasError = false
 
   try {
-    const invitations = await getInvitationsWithGuests()
-    guests = invitations.flatMap((inv) => inv.guests || [])
+    const [invitations, stats] = await Promise.allSettled([
+      getInvitationsWithGuests(),
+      getStats(),
+    ])
+
+    if (invitations.status === 'fulfilled') {
+      guests = invitations.value.flatMap((inv) => inv.guests || [])
+    } else {
+      hasError = true
+    }
+
+    if (stats.status === 'fulfilled') {
+      totalGuests = stats.value.totalGuests
+    } else {
+      totalGuests = guests.length
+    }
   } catch (error) {
     console.error("Error loading guests:", error)
     hasError = true
@@ -47,8 +62,8 @@ export default async function GuestsPage() {
         <ExportGuestsButton guests={guests} />
       </div>
 
-      <GuestCountIndicator guestCount={guests.length} />
-      <GuestLimitBannerWrapper guestCount={guests.length} />
+      <GuestCountIndicator guestCount={totalGuests} />
+      <GuestLimitBannerWrapper guestCount={totalGuests} />
 
       {hasError && <ErrorAlert />}
 
