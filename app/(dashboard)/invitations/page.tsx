@@ -9,18 +9,8 @@ import { ErrorAlert } from "@/components/error-alert"
 import type { Invitation } from "@/lib/types"
 
 export const metadata: Metadata = {
-  title: "Invitaciones",
-  description: "Gestiona todas tus invitaciones de boda. Crea nuevas invitaciones, rastrea respuestas y envía mensajes personalizados a tus invitados.",
-  openGraph: {
-    title: "Invitaciones | LOVEPOSTAL",
-    description: "Gestiona todas tus invitaciones de boda. Crea nuevas invitaciones, rastrea respuestas y envía mensajes personalizados a tus invitados.",
-    url: "/invitations",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Invitaciones | LOVEPOSTAL",
-    description: "Gestiona todas tus invitaciones de boda. Crea nuevas invitaciones, rastrea respuestas y envía mensajes personalizados a tus invitados.",
-  },
+  title: "Grupos",
+  description: "Gestiona los grupos de invitados de tu boda. Cada grupo recibe un link unico para confirmar asistencia.",
 }
 
 export default async function InvitationsPage() {
@@ -37,7 +27,7 @@ export default async function InvitationsPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 className="text-3xl font-serif font-bold tracking-tight">Invitaciones</h2>
+        <h2 className="text-3xl font-serif font-bold tracking-tight">Grupos</h2>
         <PlanGate>
           <CreateInvitationModal />
         </PlanGate>

@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Mail, Users, Menu, Settings, LogOut, Search, ChevronLeft, ChevronRight, Utensils } from "lucide-react"
+import { LayoutDashboard, Sparkles, Mail, Users, Menu, Settings, LogOut, Search, ChevronLeft, ChevronRight, Utensils } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useSidebar } from "@/components/sidebar-provider"
@@ -20,7 +20,12 @@ const routes = [
     href: "/",
   },
   {
-    label: "Invitaciones",
+    label: "Mi Invitacion",
+    icon: Sparkles,
+    href: "/mi-invitacion",
+  },
+  {
+    label: "Grupos",
     icon: Mail,
     href: "/invitations",
   },
@@ -192,7 +197,7 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
               onClick={onNavigate}
               className={cn(
                 "text-sm group flex p-3 w-full font-medium cursor-pointer rounded-lg transition",
-                pathname === route.href
+                (route.href === "/" ? pathname === "/" : pathname.startsWith(route.href))
                   ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
                   : "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent",
                 isCollapsed ? "justify-center" : "justify-start"

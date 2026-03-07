@@ -17,6 +17,7 @@ interface PublicInvitation {
   eventDate: string | null
   location: string | null
   ownerPlan: string
+  tableName: string | null
   guests: PublicGuest[]
 }
 
@@ -49,6 +50,13 @@ export default async function PublicInvitationPage({ params }: PageProps) {
       />
       {invitation.location && (
         <InvitationLocation location={invitation.location} />
+      )}
+      {invitation.tableName && (
+        <section className="flex flex-col items-center px-6 py-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            Tu mesa: <span className="font-medium text-foreground">{invitation.tableName}</span>
+          </p>
+        </section>
       )}
       <InvitationRsvpSection
         slug={slug}
