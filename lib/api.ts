@@ -67,6 +67,7 @@ async function fetchAPI<T>(
   }
 
   const defaultOptions: RequestInit = {
+    cache: 'no-store' as RequestCache,
     ...options,
     headers,
   }
