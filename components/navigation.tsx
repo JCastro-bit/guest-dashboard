@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Sparkles, Mail, Users, Menu, Settings, LogOut, Search, ChevronLeft, ChevronRight, Utensils } from "lucide-react"
+import { LayoutDashboard, Sparkles, Mail, Users, Menu, Settings, LogOut, Search, ChevronLeft, ChevronRight, Utensils, ArrowUpCircle } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useSidebar } from "@/components/sidebar-provider"
@@ -224,7 +224,11 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
               )}
             </span>
             {(user.plan === 'free' || user.planStatus !== 'active') && (
-              <Link href="/upgrade" className="text-xs text-primary hover:underline mt-0.5 block">
+              <Link
+                href="/upgrade"
+                className="inline-flex items-center gap-1 text-xs font-medium mt-1 px-2 py-0.5 rounded-md bg-sidebar-accent text-sidebar-foreground hover:bg-sidebar-accent/80 transition-colors"
+              >
+                <ArrowUpCircle className="w-3 h-3" />
                 Mejorar plan
               </Link>
             )}

@@ -88,7 +88,11 @@ export function CreateInvitationModal({ invitationCount = 0 }: CreateInvitationM
 
   if (isFreeLimited) {
     return (
-      <Button variant="outline" disabled className="gap-2 opacity-70">
+      <Button
+        variant="outline"
+        className="gap-2 opacity-80 cursor-pointer"
+        onClick={() => router.push("/upgrade")}
+      >
         <Lock className="h-4 w-4" />
         Crear Grupo
         <span className="text-xs font-normal text-muted-foreground">Plan Esencial</span>

@@ -64,7 +64,7 @@ export default async function PublicInvitationPage({ params }: PageProps) {
       />
       {invitation.ownerPlan === "free" && (
         <footer className="text-center py-8 text-xs text-muted-foreground font-sans">
-          Creado con{" "}
+          Creado con <span className="text-primary" aria-label="amor">&#9829;</span> en{" "}
           <a
             href="https://lovepostal.studio"
             target="_blank"
@@ -72,6 +72,15 @@ export default async function PublicInvitationPage({ params }: PageProps) {
             className="underline hover:text-foreground transition-colors"
           >
             LOVEPOSTAL
+          </a>
+          {" · "}
+          <a
+            href="https://lovepostal.studio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            lovepostal.studio
           </a>
         </footer>
       )}

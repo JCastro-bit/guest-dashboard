@@ -10,6 +10,7 @@ import { SearchButton } from "@/components/search-button"
 import Link from "next/link"
 import { ErrorAlert } from "@/components/error-alert"
 import { GuestLimitBannerWrapper } from "@/components/guest-limit-banner-wrapper"
+import { GuestCountIndicator } from "@/components/guest-count-indicator"
 import type { Guest } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default async function GuestsPage() {
         <ExportGuestsButton guests={guests} />
       </div>
 
+      <GuestCountIndicator guestCount={guests.length} />
       <GuestLimitBannerWrapper guestCount={guests.length} />
 
       {hasError && <ErrorAlert />}
