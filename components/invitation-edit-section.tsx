@@ -7,12 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Pencil, Loader2, Check, ChevronDown, ChevronUp, Lock } from "lucide-react"
-import { updateInvitation, getInvitationTemplates, getTables } from "@/lib/api"
+import { updateInvitation, getInvitationTemplates } from "@/lib/api"
 import { useAuth } from "@/components/auth-provider"
 import { toast } from "sonner"
-import type { Table } from "@/lib/types"
 
 interface Template {
   id: string
@@ -37,7 +35,6 @@ interface InvitationEditSectionProps {
   initialMessage: string | null
   initialEventDate: string | null
   initialLocation: string | null
-  initialTableId: string | null
   initialTemplateId: string | null
   initialStylePreset: string | null
   initialColorPalette: string | null
@@ -49,7 +46,6 @@ export function InvitationEditSection({
   initialMessage,
   initialEventDate,
   initialLocation,
-  initialTableId,
   initialTemplateId,
   initialStylePreset,
   initialColorPalette,
@@ -65,20 +61,15 @@ export function InvitationEditSection({
   const [message, setMessage] = useState(initialMessage ?? "")
   const [eventDate, setEventDate] = useState(initialEventDate ?? "")
   const [location, setLocation] = useState(initialLocation ?? "")
-  const [tableId, setTableId] = useState(initialTableId ?? "unassigned")
   const [templateId, setTemplateId] = useState(initialTemplateId ?? "")
   const [colorPalette, setColorPalette] = useState(initialColorPalette ?? "warm")
 
   const [templates, setTemplates] = useState<Template[]>([])
-  const [tables, setTables] = useState<Table[]>([])
 
   useEffect(() => {
     if (!expanded) return
     getInvitationTemplates(initialStylePreset ?? undefined)
       .then((data) => setTemplates(data.templates))
-      .catch(() => {})
-    getTables()
-      .then(setTables)
       .catch(() => {})
   }, [expanded, initialStylePreset])
 
@@ -96,7 +87,6 @@ export function InvitationEditSection({
         message: message.trim() || null,
         eventDate: eventDate || null,
         location: location.trim() || null,
-        tableId: tableId === "unassigned" ? null : tableId,
         // @ts-expect-error — templateId, colorPalette are new Prisma fields not yet in CreateInvitationRequest type
         templateId: templateId || null,
         colorPalette: colorPalette || null,
@@ -135,7 +125,7 @@ export function InvitationEditSection({
             <h3 className="text-sm font-medium text-foreground">Datos del evento</h3>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="edit-name">Nombre</Label>
+                <Label htmlFor="edit-name">Nombres de la pareja</Label>
                 <Input
                   id="edit-name"
                   value={name}
@@ -160,22 +150,6 @@ export function InvitationEditSection({
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="ej. Hacienda San Jose, Tlajomulco"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-table">Mesa</Label>
-                <Select value={tableId} onValueChange={setTableId}>
-                  <SelectTrigger id="edit-table">
-                    <SelectValue placeholder="Selecciona una mesa" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="unassigned">Sin asignar</SelectItem>
-                    {tables.map((t) => (
-                      <SelectItem key={t.id} value={t.id}>
-                        {t.name} ({t.capacity} lugares)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
             </div>
             <div className="space-y-2">

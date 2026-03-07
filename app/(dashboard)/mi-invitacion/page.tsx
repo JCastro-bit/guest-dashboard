@@ -71,10 +71,14 @@ export default async function MiInvitacionPage() {
       {/* Current details summary */}
       <Card>
         <CardHeader>
-          <CardTitle>Datos del evento</CardTitle>
+          <CardTitle>Datos de la boda</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <p className="text-sm font-medium">Pareja</p>
+              <p className="text-sm text-muted-foreground">{invitation.name}</p>
+            </div>
             <div className="flex items-start gap-3">
               <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
               <div>
@@ -115,7 +119,6 @@ export default async function MiInvitacionPage() {
         initialMessage={invitation.message}
         initialEventDate={invitation.eventDate}
         initialLocation={invitation.location}
-        initialTableId={invitation.tableId}
         initialTemplateId={invitation.templateId ?? null}
         initialStylePreset={invitation.stylePreset ?? null}
         initialColorPalette={invitation.colorPalette ?? null}
