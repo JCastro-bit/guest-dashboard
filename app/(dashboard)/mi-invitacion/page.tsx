@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { getInvitations } from "@/lib/api"
+import { getMasterInvitation } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, Calendar, MapPin, MessageSquare } from "lucide-react"
@@ -21,8 +21,7 @@ export default async function MiInvitacionPage() {
   let hasError = false
 
   try {
-    const invitations = await getInvitations()
-    invitation = invitations[0] ?? null
+    invitation = await getMasterInvitation()
   } catch {
     hasError = true
   }

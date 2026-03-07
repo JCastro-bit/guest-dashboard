@@ -133,6 +133,21 @@ export async function getInvitations(
 }
 
 /**
+ * Get the master invitation (oldest by createdAt).
+ * The master holds global wedding data: couple name, date, location, message,
+ * template, and color palette. All groups inherit design from this invitation.
+ */
+export async function getMasterInvitation(): Promise<Invitation | null> {
+  const invitations = await getInvitations()
+  if (invitations.length === 0) return null
+  // API returns createdAt DESC; sort ASC to find the oldest (master)
+  const sorted = [...invitations].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  )
+  return sorted[0]
+}
+
+/**
  * Get all invitations enriched with their guests.
  * Since the GET /api/v1/invitations/ endpoint doesn't include guests,
  * this function fetches guests separately and enriches the invitations.
