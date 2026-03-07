@@ -203,6 +203,15 @@ export async function deleteInvitation(id: string): Promise<void> {
   })
 }
 
+// ==================== Templates API ====================
+
+export async function getInvitationTemplates(
+  style?: string
+): Promise<{ templates: { id: string; name: string; plan: string; style: string; previewUrl: string; defaultColorPalette: string }[]; userPlan: string }> {
+  const params = style ? `?style=${encodeURIComponent(style)}` : ""
+  return fetchAPI(`/api/v1/invitations/templates${params}`)
+}
+
 // ==================== Guests API ====================
 
 export async function getGuests(

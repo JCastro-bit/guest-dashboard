@@ -19,6 +19,6 @@ export const PLAN_LABELS: Record<Plan, string> = {
 }
 
 export const PLAN_PRICES = {
-  esencial: 2250,
-  premium: 4499,
+  esencial: 1499,
+  premium: 2999,
 } as const

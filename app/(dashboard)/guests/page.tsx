@@ -9,6 +9,7 @@ import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
 import Link from "next/link"
 import { ErrorAlert } from "@/components/error-alert"
+import { GuestLimitBannerWrapper } from "@/components/guest-limit-banner-wrapper"
 import type { Guest } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -44,6 +45,8 @@ export default async function GuestsPage() {
         <h2 className="text-3xl font-serif font-bold tracking-tight">Lista de Invitados</h2>
         <ExportGuestsButton guests={guests} />
       </div>
+
+      <GuestLimitBannerWrapper guestCount={guests.length} />
 
       {hasError && <ErrorAlert />}
 

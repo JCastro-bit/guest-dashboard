@@ -1,22 +1,32 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2, Loader2 } from "lucide-react"
 import { useAuth } from "@/components/auth-provider"
 import { canWrite } from "@/lib/plan"
+import { getInvitations } from "@/lib/api"
 
 export default function UpgradeSuccessPage() {
   const router = useRouter()
   const { user, refreshUser } = useAuth()
   const [polling, setPolling] = useState(true)
+  const redirectedRef = useRef(false)
 
   const planActivated = user ? canWrite(user.plan, user.planStatus) : false
 
   useEffect(() => {
     if (planActivated) {
       setPolling(false)
+      if (!redirectedRef.current) {
+        redirectedRef.current = true
+        getInvitations()
+          .then((invitations) => {
+            router.push(invitations.length === 0 ? "/onboarding" : "/")
+          })
+          .catch(() => router.push("/"))
+      }
       return
     }
 
@@ -34,7 +44,7 @@ export default function UpgradeSuccessPage() {
       }
     }, 3000)
     return () => clearInterval(interval)
-  }, [refreshUser, planActivated])
+  }, [refreshUser, planActivated, router])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">

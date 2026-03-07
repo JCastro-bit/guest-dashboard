@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -13,33 +14,68 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus } from "lucide-react"
+import { Plus, Loader2 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getTables } from "@/lib/api"
+import { getTables, createInvitation } from "@/lib/api"
 import { toast } from "sonner"
 import type { Table } from "@/lib/types"
 
 export function CreateInvitationModal() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [tables, setTables] = useState<Table[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loadingTables, setLoadingTables] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  const [name, setName] = useState("")
+  const [tableId, setTableId] = useState("unassigned")
+  const [nameError, setNameError] = useState("")
 
   useEffect(() => {
     if (open) {
       loadTables()
+      setName("")
+      setTableId("unassigned")
+      setNameError("")
     }
   }, [open])
 
   const loadTables = async () => {
     try {
-      setLoading(true)
+      setLoadingTables(true)
       const data = await getTables()
       setTables(data)
     } catch (error) {
       console.error("Failed to load tables:", error)
       toast.error("No se pudieron cargar las mesas. Puedes continuar sin asignar mesa.")
     } finally {
-      setLoading(false)
+      setLoadingTables(false)
+    }
+  }
+
+  const handleSubmit = async () => {
+    console.log("handleSubmit called", { name, tableId })
+
+    const trimmed = name.trim()
+    if (!trimmed) {
+      setNameError("El nombre es obligatorio")
+      return
+    }
+    setNameError("")
+
+    setSubmitting(true)
+    try {
+      await createInvitation({
+        name: trimmed,
+        tableId: tableId === "unassigned" ? null : tableId,
+      })
+      toast.success("Invitacion creada correctamente")
+      setOpen(false)
+      router.refresh()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al crear la invitacion")
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -62,15 +98,23 @@ export function CreateInvitationModal() {
             <Label htmlFor="name" className="text-right">
               Nombre
             </Label>
-            <Input id="name" placeholder="ej. Familia García" className="col-span-3" />
+            <div className="col-span-3 space-y-1">
+              <Input
+                id="name"
+                placeholder="ej. Familia García"
+                value={name}
+                onChange={(e) => { setName(e.target.value); setNameError("") }}
+              />
+              {nameError && <p className="text-xs text-destructive">{nameError}</p>}
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="table" className="text-right">
               Mesa
             </Label>
-            <Select>
-              <SelectTrigger className="col-span-3" disabled={loading}>
-                <SelectValue placeholder={loading ? "Cargando mesas..." : "Selecciona una mesa"} />
+            <Select value={tableId} onValueChange={setTableId}>
+              <SelectTrigger className="col-span-3" disabled={loadingTables}>
+                <SelectValue placeholder={loadingTables ? "Cargando mesas..." : "Selecciona una mesa"} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="unassigned">Sin asignar</SelectItem>
@@ -82,31 +126,14 @@ export function CreateInvitationModal() {
               </SelectContent>
             </Select>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="max-guests" className="text-right">
-              Máx. Invitados
-            </Label>
-            <Input id="max-guests" type="number" defaultValue="2" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="side" className="text-right">
-              Lado
-            </Label>
-            <Select defaultValue="mutual">
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Selecciona lado" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="bride">Novia</SelectItem>
-                <SelectItem value="groom">Novio</SelectItem>
-                <SelectItem value="mutual">Mutuo</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={() => setOpen(false)}>
-            Crear Invitación
+          <Button type="button" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? (
+              <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creando...</>
+            ) : (
+              "Crear Invitación"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

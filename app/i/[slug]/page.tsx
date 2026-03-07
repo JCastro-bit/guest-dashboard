@@ -10,6 +10,7 @@ interface PublicInvitation {
   message: string | null
   eventDate: string | null
   location: string | null
+  ownerPlan: string
 }
 
 async function getPublicInvitation(slug: string): Promise<PublicInvitation | null> {
@@ -48,6 +49,19 @@ export default async function PublicInvitationPage({ params, searchParams }: Pag
         slug={slug}
         guestId={guestId ?? null}
       />
+      {invitation.ownerPlan === "free" && (
+        <footer className="text-center py-8 text-xs text-muted-foreground font-sans">
+          Creado con{" "}
+          <a
+            href="https://lovepostal.studio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground transition-colors"
+          >
+            LOVEPOSTAL
+          </a>
+        </footer>
+      )}
     </main>
   )
 }

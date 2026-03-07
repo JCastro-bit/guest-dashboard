@@ -12,6 +12,7 @@ import type { Metadata } from "next"
 import { SearchButton } from "@/components/search-button"
 import { UpgradeBanner } from "@/components/upgrade-banner"
 import { ErrorAlert } from "@/components/error-alert"
+import { OnboardingRedirect } from "@/components/onboarding-redirect"
 import type { DashboardStats, Invitation } from "@/lib/types"
 
 export const metadata: Metadata = {
@@ -60,6 +61,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      <OnboardingRedirect />
       <UpgradeBanner message="Activa tu plan para comenzar a crear invitaciones y gestionar tu boda." />
 
       {hasError && <ErrorAlert />}
