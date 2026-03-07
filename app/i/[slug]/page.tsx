@@ -4,6 +4,12 @@ import InvitationHero from '@/components/invitation-public/invitation-hero'
 import InvitationLocation from '@/components/invitation-public/invitation-location'
 import InvitationRsvpSection from '@/components/invitation-public/invitation-rsvp-section'
 
+interface PublicGuest {
+  id: string
+  name: string
+  status: string
+}
+
 interface PublicInvitation {
   slug: string
   coupleName: string
@@ -11,6 +17,7 @@ interface PublicInvitation {
   eventDate: string | null
   location: string | null
   ownerPlan: string
+  guests: PublicGuest[]
 }
 
 async function getPublicInvitation(slug: string): Promise<PublicInvitation | null> {
@@ -25,12 +32,10 @@ async function getPublicInvitation(slug: string): Promise<PublicInvitation | nul
 
 interface PageProps {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ g?: string }>
 }
 
-export default async function PublicInvitationPage({ params, searchParams }: PageProps) {
+export default async function PublicInvitationPage({ params }: PageProps) {
   const { slug } = await params
-  const { g: guestId } = await searchParams
 
   const invitation = await getPublicInvitation(slug)
   if (!invitation) notFound()
@@ -47,7 +52,7 @@ export default async function PublicInvitationPage({ params, searchParams }: Pag
       )}
       <InvitationRsvpSection
         slug={slug}
-        guestId={guestId ?? null}
+        guests={invitation.guests}
       />
       {invitation.ownerPlan === "free" && (
         <footer className="text-center py-8 text-xs text-muted-foreground font-sans">
