@@ -27,7 +27,7 @@ export default async function InvitationsPage() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-3xl font-serif font-bold tracking-tight">Grupos</h2>
-        <CreateInvitationModal />
+        <CreateInvitationModal invitationCount={invitations.length} />
       </div>
 
       {hasError && <ErrorAlert />}

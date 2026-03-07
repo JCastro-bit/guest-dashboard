@@ -2,9 +2,11 @@
 
 import { Sparkles, X } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/components/auth-provider"
 import { canWrite } from "@/lib/plan"
+
+const DISMISS_KEY = "lovepostal_upgrade_banner_dismissed"
 
 interface UpgradeBannerProps {
   message?: string
@@ -17,6 +19,19 @@ export function UpgradeBanner({
 }: UpgradeBannerProps) {
   const [dismissed, setDismissed] = useState(false)
   const { user } = useAuth()
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem(DISMISS_KEY)) {
+      setDismissed(true)
+    }
+  }, [])
+
+  const handleDismiss = () => {
+    setDismissed(true)
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(DISMISS_KEY, "1")
+    }
+  }
 
   if (!user || canWrite(user.plan, user.planStatus) || dismissed) return null
 
@@ -51,7 +66,7 @@ export function UpgradeBanner({
         Activar plan
       </Link>
       <button
-        onClick={() => setDismissed(true)}
+        onClick={handleDismiss}
         className="absolute top-2 right-2 text-muted-foreground hover:text-foreground"
         aria-label="Cerrar"
       >

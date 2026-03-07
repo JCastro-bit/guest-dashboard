@@ -219,10 +219,15 @@ function SidebarContent({ pathname, onNavigate, isCollapsed }: { pathname: strin
             <p className="text-xs text-sidebar-foreground/70 truncate">{user.email}</p>
             <span className="text-xs text-sidebar-foreground/70">
               Plan {PLAN_LABELS[user.plan ?? 'free']}
-              {user.planStatus === 'active' && (
+              {user.planStatus === 'active' && user.plan !== 'free' && (
                 <span className="ml-1 text-success">●</span>
               )}
             </span>
+            {(user.plan === 'free' || user.planStatus !== 'active') && (
+              <Link href="/upgrade" className="text-xs text-primary hover:underline mt-0.5 block">
+                Mejorar plan
+              </Link>
+            )}
           </div>
         )}
         <div className="space-y-1">

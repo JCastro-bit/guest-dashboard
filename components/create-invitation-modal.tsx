@@ -14,13 +14,20 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Loader2 } from "lucide-react"
+import { Plus, Loader2, Lock } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getTables, createInvitation } from "@/lib/api"
 import { toast } from "sonner"
+import { useAuth } from "@/components/auth-provider"
 import type { Table } from "@/lib/types"
 
-export function CreateInvitationModal() {
+interface CreateInvitationModalProps {
+  invitationCount?: number
+}
+
+export function CreateInvitationModal({ invitationCount = 0 }: CreateInvitationModalProps) {
+  const { user } = useAuth()
+  const isFreeLimited = user?.plan === "free" && invitationCount >= 1
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [tables, setTables] = useState<Table[]>([])
@@ -77,6 +84,16 @@ export function CreateInvitationModal() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (isFreeLimited) {
+    return (
+      <Button variant="outline" disabled className="gap-2 opacity-70">
+        <Lock className="h-4 w-4" />
+        Crear Grupo
+        <span className="text-xs font-normal text-muted-foreground">Plan Esencial</span>
+      </Button>
+    )
   }
 
   return (
