@@ -12,6 +12,7 @@ import { notFound } from "next/navigation"
 import { getInvitationStatus, getGuestCount } from "@/lib/utils"
 import type { Metadata } from "next"
 import { InvitationQRCode } from "@/components/invitation-qr-code"
+import { InvitationEditSection } from "@/components/invitation-edit-section"
 
 interface InvitationDetailsPageProps {
   params: Promise<{
@@ -206,6 +207,19 @@ export default async function InvitationDetailsPage({ params }: InvitationDetail
             )}
           </CardContent>
             </Card>
+
+            {/* Edit Section */}
+            <InvitationEditSection
+              invitationId={id}
+              initialName={invitation.name}
+              initialMessage={invitation.message}
+              initialEventDate={invitation.eventDate}
+              initialLocation={invitation.location}
+              initialTableId={invitation.tableId}
+              initialTemplateId={invitation.templateId ?? null}
+              initialStylePreset={invitation.stylePreset ?? null}
+              initialColorPalette={invitation.colorPalette ?? null}
+            />
 
             {/* Guests Section */}
             <Card>

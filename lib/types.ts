@@ -25,6 +25,9 @@ export interface Invitation {
   location: string | null
   qrCode: string | null
   operationId: string | null
+  templateId: string | null
+  stylePreset: string | null
+  colorPalette: string | null
   createdAt: string
   guests?: Guest[]
   table?: Table | null
