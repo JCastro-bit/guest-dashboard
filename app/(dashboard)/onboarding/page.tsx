@@ -143,6 +143,13 @@ export default function OnboardingPage() {
     }
   }, [step, formData.style, formData.coupleName, formData.eventDate, formData.noDate, formData.venue])
 
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
+
   const handleMessageChange = useCallback((text: string) => {
     setMessageText(text)
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -169,12 +176,21 @@ export default function OnboardingPage() {
     }
   }
 
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const handleCopy = () => {
     const url = `https://app.lovepostal.studio/i/${createdInvitation?.slug}`
     navigator.clipboard.writeText(url)
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+    copyTimerRef.current = setTimeout(() => setCopied(false), 2000)
   }
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+    }
+  }, [])
 
   const shareUrl = `https://app.lovepostal.studio/i/${createdInvitation?.slug}`
 
