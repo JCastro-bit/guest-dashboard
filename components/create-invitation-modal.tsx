@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Plus, Loader2 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getTables, createInvitation } from "@/lib/api"
@@ -28,6 +29,9 @@ export function CreateInvitationModal() {
   const [submitting, setSubmitting] = useState(false)
 
   const [name, setName] = useState("")
+  const [eventDate, setEventDate] = useState("")
+  const [location, setLocation] = useState("")
+  const [message, setMessage] = useState("")
   const [tableId, setTableId] = useState("unassigned")
   const [nameError, setNameError] = useState("")
 
@@ -35,6 +39,9 @@ export function CreateInvitationModal() {
     if (open) {
       loadTables()
       setName("")
+      setEventDate("")
+      setLocation("")
+      setMessage("")
       setTableId("unassigned")
       setNameError("")
     }
@@ -67,6 +74,9 @@ export function CreateInvitationModal() {
     try {
       await createInvitation({
         name: trimmed,
+        eventDate: eventDate || null,
+        location: location.trim() || null,
+        message: message.trim() || null,
         tableId: tableId === "unassigned" ? null : tableId,
       })
       toast.success("Invitacion creada correctamente")
@@ -107,6 +117,43 @@ export function CreateInvitationModal() {
               />
               {nameError && <p className="text-xs text-destructive">{nameError}</p>}
             </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="eventDate" className="text-right">
+              Fecha
+            </Label>
+            <Input
+              id="eventDate"
+              type="date"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="location" className="text-right">
+              Lugar
+            </Label>
+            <Input
+              id="location"
+              placeholder="ej. Hacienda San José, Tlajomulco"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-start gap-4">
+            <Label htmlFor="message" className="text-right pt-2">
+              Mensaje
+            </Label>
+            <Textarea
+              id="message"
+              placeholder="Texto que verán tus invitados al abrir el link"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={3}
+              className="col-span-3"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="table" className="text-right">

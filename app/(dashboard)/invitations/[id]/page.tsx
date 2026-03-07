@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { GuestTable } from "@/components/guest-table"
 import { StatusBadge } from "@/components/status-badge"
-import { ArrowLeft, Calendar, MapPin, MessageSquare, QrCode, Users } from "lucide-react"
+import { ArrowLeft, Calendar, ExternalLink, MapPin, MessageSquare, QrCode, Users } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { notFound } from "next/navigation"
@@ -101,7 +101,26 @@ export default async function InvitationDetailsPage({ params }: InvitationDetail
               </p>
             </div>
           </div>
-          <StatusBadge status={status} />
+          <div className="flex items-center gap-2">
+            {invitation.slug ? (
+              <Button asChild>
+                <a
+                  href={`https://app.lovepostal.studio/i/${invitation.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Ver invitación
+                </a>
+              </Button>
+            ) : (
+              <Button disabled title="Generando...">
+                <ExternalLink className="mr-2 h-4 w-4" />
+                Ver invitación
+              </Button>
+            )}
+            <StatusBadge status={status} />
+          </div>
         </div>
 
         {/* Main Content Grid */}
