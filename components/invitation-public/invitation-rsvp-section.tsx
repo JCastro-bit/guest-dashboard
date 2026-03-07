@@ -10,7 +10,6 @@ interface InvitationRsvpSectionProps {
 type RsvpState = 'idle' | 'loading' | 'success' | 'error'
 
 export default function InvitationRsvpSection({ slug, guestId }: InvitationRsvpSectionProps) {
-  const [localGuestId, setLocalGuestId] = useState(guestId ?? '')
   const [selectedStatus, setSelectedStatus] = useState<'confirmed' | 'declined' | null>(null)
   const [message, setMessage] = useState('')
   const [state, setState] = useState<RsvpState>('idle')
@@ -18,7 +17,7 @@ export default function InvitationRsvpSection({ slug, guestId }: InvitationRsvpS
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const handleSubmit = async () => {
-    if (!localGuestId || !selectedStatus) return
+    if (!guestId || !selectedStatus) return
 
     setState('loading')
     setErrorMessage(null)
@@ -29,7 +28,7 @@ export default function InvitationRsvpSection({ slug, guestId }: InvitationRsvpS
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          guestId: localGuestId,
+          guestId,
           status: selectedStatus,
           ...(message ? { message } : {}),
         }),
@@ -49,6 +48,19 @@ export default function InvitationRsvpSection({ slug, guestId }: InvitationRsvpS
     }
   }
 
+  if (!guestId) {
+    return (
+      <section className="flex flex-col items-center px-6 py-12 text-center space-y-4">
+        <div className="rounded-lg bg-card p-8 shadow-sm max-w-md w-full space-y-3">
+          <h2 className="font-serif text-2xl text-foreground">Confirma tu asistencia</h2>
+          <p className="text-muted-foreground">
+            Contacta a los novios para confirmar tu asistencia.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   if (state === 'success') {
     return (
       <section className="flex flex-col items-center px-6 py-12 text-center space-y-4">
@@ -65,18 +77,6 @@ export default function InvitationRsvpSection({ slug, guestId }: InvitationRsvpS
       <h2 className="font-serif text-2xl text-foreground">Confirma tu asistencia</h2>
 
       <div className="max-w-md w-full space-y-4">
-        {!guestId && (
-          <input
-            type="text"
-            value={localGuestId}
-            onChange={(e) => setLocalGuestId(e.target.value)}
-            placeholder="Codigo de invitado (viene en tu link)"
-            className="w-full rounded-lg border border-input bg-background px-4 py-3
-                       text-foreground placeholder:text-muted-foreground
-                       focus:outline-none focus:ring-2 focus:ring-primary/50"
-          />
-        )}
-
         <div className="flex gap-3">
           <button
             type="button"
@@ -117,7 +117,7 @@ export default function InvitationRsvpSection({ slug, guestId }: InvitationRsvpS
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={state === 'loading' || !localGuestId}
+              disabled={state === 'loading'}
               className="w-full rounded-lg bg-primary text-primary-foreground py-3
                          font-medium transition-opacity hover:opacity-90
                          disabled:opacity-50 disabled:cursor-not-allowed"
