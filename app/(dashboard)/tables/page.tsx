@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { getTables, getTableStats } from "@/lib/api"
 import { CreateTableModal } from "@/components/create-table-modal"
-import { PlanGate } from "@/components/plan-gate"
 import type { Metadata } from "next"
 import { TablesContainer } from "@/components/tables-container"
 import { TableStatsCards } from "@/components/table-stats-cards"
@@ -57,9 +56,7 @@ export default async function TablesPage() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-3xl font-serif font-bold tracking-tight">Tables</h2>
-        <PlanGate>
-          <CreateTableModal />
-        </PlanGate>
+        <CreateTableModal />
       </div>
 
       {hasError && <ErrorAlert />}

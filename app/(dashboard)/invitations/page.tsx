@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { getInvitationsWithGuests } from "@/lib/api"
 import { CreateInvitationModal } from "@/components/create-invitation-modal"
-import { PlanGate } from "@/components/plan-gate"
 import type { Metadata } from "next"
 import { InvitationsContainer } from "@/components/invitations-container"
 import { ErrorAlert } from "@/components/error-alert"
@@ -28,9 +27,7 @@ export default async function InvitationsPage() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-3xl font-serif font-bold tracking-tight">Grupos</h2>
-        <PlanGate>
-          <CreateInvitationModal />
-        </PlanGate>
+        <CreateInvitationModal />
       </div>
 
       {hasError && <ErrorAlert />}
