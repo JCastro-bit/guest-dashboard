@@ -87,7 +87,6 @@ export function InvitationEditSection({
         message: message.trim() || null,
         eventDate: eventDate || null,
         location: location.trim() || null,
-        // @ts-expect-error — templateId, colorPalette are new Prisma fields not yet in CreateInvitationRequest type
         templateId: templateId || null,
         colorPalette: colorPalette || null,
       })

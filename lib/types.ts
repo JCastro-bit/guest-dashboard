@@ -62,6 +62,9 @@ export interface CreateInvitationRequest {
   message?: string | null
   eventDate?: string | null
   location?: string | null
+  templateId?: string | null
+  stylePreset?: string | null
+  colorPalette?: string | null
   qrCode?: string | null
   operationId?: string | null
 }

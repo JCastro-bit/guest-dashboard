@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import InvitationHero from '@/components/invitation-public/invitation-hero'
-import InvitationLocation from '@/components/invitation-public/invitation-location'
+import { getTemplate } from '@/lib/templates'
+import InvitationPreview from '@/components/invitation-preview'
 import InvitationRsvpSection from '@/components/invitation-public/invitation-rsvp-section'
 
 interface PublicGuest {
@@ -16,6 +16,8 @@ interface PublicInvitation {
   message: string | null
   eventDate: string | null
   location: string | null
+  templateId: string | null
+  colorPalette: string | null
   ownerPlan: string
   tableName: string | null
   guests: PublicGuest[]
@@ -41,35 +43,47 @@ export default async function PublicInvitationPage({ params }: PageProps) {
   const invitation = await getPublicInvitation(slug)
   if (!invitation) notFound()
 
+  const template = getTemplate(invitation.templateId)
+
   return (
-    <main className="min-h-screen bg-background">
-      <InvitationHero
+    <main
+      className="min-h-screen"
+      style={{ backgroundColor: template.colors.background }}
+    >
+      <InvitationPreview
+        template={template}
         coupleName={invitation.coupleName}
         eventDate={invitation.eventDate}
-        message={invitation.message}
+        venue={invitation.location}
+        message={invitation.message ?? ''}
       />
-      {invitation.location && (
-        <InvitationLocation location={invitation.location} />
-      )}
       {invitation.tableName && (
-        <section className="flex flex-col items-center px-6 py-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Tu mesa: <span className="font-medium text-foreground">{invitation.tableName}</span>
+        <section
+          className="flex flex-col items-center px-6 py-6 text-center"
+          style={{ backgroundColor: template.colors.background, color: template.colors.text }}
+        >
+          <p className="text-sm opacity-70">
+            Tu mesa: <span className="font-medium opacity-100">{invitation.tableName}</span>
           </p>
         </section>
       )}
-      <InvitationRsvpSection
-        slug={slug}
-        guests={invitation.guests}
-      />
+      <div style={{ backgroundColor: template.colors.background }}>
+        <InvitationRsvpSection
+          slug={slug}
+          guests={invitation.guests}
+        />
+      </div>
       {invitation.ownerPlan === "free" && (
-        <footer className="text-center py-8 text-xs text-muted-foreground font-sans">
-          Creado con <span className="text-primary" aria-label="amor">&#9829;</span> en{" "}
+        <footer
+          className="text-center py-8 text-xs font-sans opacity-60"
+          style={{ backgroundColor: template.colors.background, color: template.colors.text }}
+        >
+          Creado con <span style={{ color: template.colors.accent }} aria-label="amor">&#9829;</span> en{" "}
           <a
             href="https://lovepostal.studio"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline hover:text-foreground transition-colors"
+            className="underline hover:opacity-80 transition-opacity"
           >
             LOVEPOSTAL
           </a>
@@ -78,7 +92,7 @@ export default async function PublicInvitationPage({ params }: PageProps) {
             href="https://lovepostal.studio"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline hover:text-foreground transition-colors"
+            className="underline hover:opacity-80 transition-opacity"
           >
             lovepostal.studio
           </a>

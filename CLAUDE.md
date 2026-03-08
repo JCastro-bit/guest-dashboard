@@ -33,6 +33,7 @@ app/
     page.tsx              — Dashboard principal (stats + UpgradeBanner + ErrorAlert)
     guests/               — Lista de invitados (con loading skeleton y ErrorAlert)
     invitations/          — CRUD invitaciones + detalle [id] (crear gateado por PlanGate)
+    mi-invitacion/        — Editor split-screen de invitación con preview en tiempo real
     tables/               — CRUD mesas + detalle [id] (crear gateado por PlanGate)
     upgrade/              — Selección de plan + success/failure/pending
 components/
@@ -50,11 +51,16 @@ components/
   sidebar-provider.tsx    — Context de sidebar (collapsed state)
   search-provider.tsx     — Context de búsqueda global (Cmd+K)
   search-command.tsx      — Modal de búsqueda con command palette
+  invitation-editor.tsx   — Editor split-screen con panel de controles + preview en tiempo real
+  invitation-preview.tsx  — Componente visual de invitación con 4 templates (clasico, romantico, moderno, rustico)
+  invitation-edit-section.tsx — Editor colapsable legacy (usado en onboarding)
+  create-first-invitation.tsx — Formulario de creación inicial de invitación (cuando no existe master)
   invitation-public/      — Componentes de vista pública de invitación (hero, location, rsvp)
   ui/                     — Componentes shadcn/ui (no editar manualmente)
 lib/
   api.ts                  — Cliente API con auth headers automáticos (fetchAPI, createPaymentPreference)
   auth.ts                 — Token storage (localStorage + cookie indicadora)
+  templates.ts            — Definición de 4 templates de invitación (clasico/romantico/moderno/rustico) con colores, fonts, message templates
   types.ts                — Tipos TypeScript (Guest, Invitation con slug, Table, Auth, Plan, PlanStatus)
   plan.ts                 — Helpers de plan (canWrite, isPlanActive, hasQrAccess, PLAN_LABELS, PLAN_PRICES)
   utils.ts                — cn() helper (clsx + tailwind-merge)
@@ -107,6 +113,7 @@ docker run -p 3000:3000 guest-dashboard
 ### Tipografía
 - Títulos (h1, h2): `font-serif` (Playfair Display)
 - Body/UI: `font-sans` (Noto Sans)
+- Templates de invitación usan fuentes adicionales cargadas en layout.tsx: Cormorant Garamond (`--font-cormorant`), Josefin Sans (`--font-josefin`), Lato (`--font-lato`), Raleway (`--font-raleway`). Se aplican via inline style dinámico en InvitationPreview
 
 ### Logos CDN
 - Páginas públicas (login, register, welcome, forgot/reset-password): `logo_lovepostal_4.webp`
@@ -148,11 +155,20 @@ Next.js 16 renombró `middleware.ts` → `proxy.ts` y `export function middlewar
 - **Upgrade flow:** `/upgrade` → `createPaymentPreference()` → MercadoPago → `/upgrade/success|failure|pending`
 - Success page hace auto-refresh (5 intentos c/3s) de `refreshUser()` para detectar activación del plan
 
+### Sistema de templates de invitación
+- 4 templates definidos en `lib/templates.ts`: `clasico` (free), `romantico`, `moderno`, `rustico` (esencial+)
+- Cada template tiene: colores (primary/background/text/accent), fuentes (heading/body), messageTemplate con variables `{{coupleName}}`, `{{eventDate}}`, `{{venue}}`
+- `InvitationPreview` renderiza la invitación según el template seleccionado (4 layouts visuales distintos)
+- Colores de templates se aplican como inline style dinámico (`style={{ backgroundColor: template.colors.background }}`) — esto es correcto porque son valores dinámicos
+- `InvitationEditor` es el editor split-screen: panel izquierdo (40%) con controles, panel derecho (60%) con preview en tiempo real
+- En mobile: toggle button alterna entre vista editor y preview
+
 ### Vista pública de invitación (`/i/[slug]`)
 - Ruta pública, no requiere autenticación
-- Llama a `GET /api/v1/public/invitations/:slug` para datos de la invitación
+- Llama a `GET /api/v1/public/invitations/:slug` para datos de la invitación (incluye `templateId`, `colorPalette`)
+- Renderiza `InvitationPreview` con el template guardado (default: `clasico`)
 - RSVP via `PATCH /api/v1/public/invitations/:slug/rsvp`
-- Componentes en `components/invitation-public/` (hero, location, rsvp-section)
+- Componentes RSVP en `components/invitation-public/` (rsvp-section). Hero y location ya no se usan (reemplazados por InvitationPreview)
 
 ### Manejo de errores
 - **`fetchAPI()` (lib/api.ts):** Traduce códigos HTTP a mensajes en español user-friendly (400, 401, 403, 404, 409, 422, 429, 500, 503). Errores de red → "No se pudo conectar con el servidor."

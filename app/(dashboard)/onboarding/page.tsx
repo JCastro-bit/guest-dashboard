@@ -94,7 +94,7 @@ export default function OnboardingPage() {
       setCreatedInvitation({ id: inv.id, slug: inv.slug || "" })
       // Update with template fields
       await updateInvitation(inv.id, {
-        // @ts-expect-error — stylePreset, templateId, colorPalette are new Prisma fields not yet in CreateInvitationRequest type
+
         stylePreset: formData.style,
         templateId: "free-clasico",
         colorPalette: "warm",
@@ -123,7 +123,7 @@ export default function OnboardingPage() {
     setLoading(true)
     try {
       await updateInvitation(createdInvitation.id, {
-        // @ts-expect-error — templateId, colorPalette are new Prisma fields not yet in CreateInvitationRequest type
+
         templateId: template.id,
         colorPalette: template.defaultColorPalette,
       })
@@ -168,7 +168,7 @@ export default function OnboardingPage() {
     if (!createdInvitation) return
     try {
       await updateInvitation(createdInvitation.id, {
-        // @ts-expect-error — colorPalette is a new Prisma field not yet in CreateInvitationRequest type
+
         colorPalette: palette,
       })
     } catch {

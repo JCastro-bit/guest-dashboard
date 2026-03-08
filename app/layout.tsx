@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Noto_Sans, Playfair_Display } from "next/font/google"
+import { Noto_Sans, Playfair_Display, Cormorant_Garamond, Josefin_Sans, Lato, Raleway } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -9,6 +9,10 @@ import { Toaster } from "@/components/ui/sonner"
 
 const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" })
 const playfairDisplay = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" })
+const cormorantGaramond = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-cormorant" })
+const josefinSans = Josefin_Sans({ subsets: ["latin"], variable: "--font-josefin" })
+const lato = Lato({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-lato" })
+const raleway = Raleway({ subsets: ["latin"], variable: "--font-raleway" })
 
 export const metadata: Metadata = {
   title: {
@@ -86,7 +90,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${notoSans.variable} ${playfairDisplay.variable} font-sans antialiased`}>
+      <body className={`${notoSans.variable} ${playfairDisplay.variable} ${cormorantGaramond.variable} ${josefinSans.variable} ${lato.variable} ${raleway.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
             {children}
