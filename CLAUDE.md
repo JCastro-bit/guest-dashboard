@@ -190,6 +190,20 @@ Next.js 16 renombró `middleware.ts` → `proxy.ts` y `export function middlewar
 - **PR:** título < 70 chars, descripción con resumen y test plan
 - **Principios:** SOLID, YAGNI, KISS — no sobreingeniería
 
+## Skills (`.claude/skills/`)
+
+Skills disponibles para guiar generación de código frontend y SEO:
+
+| Skill | Propósito | Cuándo se activa |
+|-------|-----------|------------------|
+| **frontend-design** | Interfaces distintivas y production-grade, evita estética genérica "AI slop" | Al crear componentes, páginas o UI nuevas |
+| **ui-design-system** | Tokens de diseño, arquitectura de componentes, accesibilidad | Al crear/mantener design systems o tokens |
+| **react-best-practices** | 40+ reglas de performance React/Next.js organizadas por impacto | Al escribir componentes React, hooks, data fetching |
+| **senior-frontend** | Patterns avanzados, scaffolding, bundle analysis | Al crear componentes complejos o optimizar bundles |
+| **seo-optimizer** | SEO técnico, schema markup, Core Web Vitals, keyword strategy | Al optimizar meta tags, structured data o contenido |
+
+Cada skill tiene un `SKILL.md` con instrucciones detalladas y algunos incluyen `references/` con guías extendidas (ej: `react-best-practices/references/rules/` con 40+ reglas individuales).
+
 ## Testing
 
 N/A — no hay framework de tests configurado. Al agregar tests, usar Vitest + React Testing Library (consistente con guests-api) con estructura AAA (Arrange, Act, Assert).
