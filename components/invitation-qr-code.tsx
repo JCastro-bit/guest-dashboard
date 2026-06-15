@@ -49,7 +49,7 @@ export function InvitationQRCode({ invitationId, invitationName }: InvitationQRC
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <QrCode className="h-5 w-5" />
-          Invitation QR Code
+          Código QR de la invitación
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-4">
@@ -66,7 +66,7 @@ export function InvitationQRCode({ invitationId, invitationName }: InvitationQRC
         </div>
         <div className="text-center space-y-2 w-full">
           <p className="text-sm text-muted-foreground">
-            Scan to view invitation details
+            Escanea para ver la invitación
           </p>
           <Button
             onClick={handleDownload}
@@ -75,7 +75,7 @@ export function InvitationQRCode({ invitationId, invitationName }: InvitationQRC
             size="sm"
           >
             <Download className="h-4 w-4 mr-2" />
-            Download QR Code
+            Descargar código QR
           </Button>
         </div>
         <div className="text-xs text-muted-foreground text-center">
