@@ -21,7 +21,7 @@ export function UpgradeBanner({
   const { user } = useAuth()
 
   useEffect(() => {
-    if (typeof window !== "undefined" && sessionStorage.getItem(DISMISS_KEY)) {
+    if (typeof window !== "undefined" && localStorage.getItem(DISMISS_KEY)) {
       setDismissed(true)
     }
   }, [])
@@ -29,7 +29,7 @@ export function UpgradeBanner({
   const handleDismiss = () => {
     setDismissed(true)
     if (typeof window !== "undefined") {
-      sessionStorage.setItem(DISMISS_KEY, "1")
+      localStorage.setItem(DISMISS_KEY, "1")
     }
   }
 

@@ -30,6 +30,9 @@ async function getPublicInvitation(slug: string): Promise<PublicInvitation | nul
   })
   if (res.status === 404) return null
   if (!res.ok) throw new Error('Error cargando la invitacion')
+  if (!res.headers.get('content-type')?.includes('application/json')) {
+    throw new Error('Error cargando la invitacion')
+  }
   return res.json()
 }
 

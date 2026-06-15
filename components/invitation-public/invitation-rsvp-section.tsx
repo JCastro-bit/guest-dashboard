@@ -54,34 +54,38 @@ export default function InvitationRsvpSection({ slug, guests }: InvitationRsvpSe
     setState('loading')
     setErrorMessage(null)
 
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL
-      const entries = Object.entries(responses)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+    const entries = Object.entries(responses)
 
-      for (let i = 0; i < entries.length; i++) {
-        const [guestId, status] = entries[i]
+    const results = await Promise.allSettled(
+      entries.map(([guestId, status], i) => {
         const body: Record<string, string> = { guestId, status }
-        // attach message only to the first guest
         if (i === 0 && message.trim()) {
           body.message = message.trim()
         }
-
-        const res = await fetch(`${apiUrl}/api/v1/public/invitations/${slug}/rsvp`, {
+        return fetch(`${apiUrl}/api/v1/public/invitations/${slug}/rsvp`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
+        }).then(async (res) => {
+          if (!res.ok) {
+            const data = await res.json().catch(() => null)
+            throw new Error(data?.error?.message ?? `Error al confirmar ${guests.find((g) => g.id === guestId)?.name}`)
+          }
         })
+      })
+    )
 
-        if (!res.ok) {
-          const data = await res.json().catch(() => null)
-          throw new Error(data?.error?.message ?? `Error al confirmar ${guests.find((g) => g.id === guestId)?.name}`)
-        }
-      }
-
-      setState('success')
-    } catch (err) {
+    const failed = results.filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+    if (failed.length > 0) {
       setState('error')
-      setErrorMessage(err instanceof Error ? err.message : 'Error al enviar las respuestas.')
+      setErrorMessage(
+        failed[0].reason instanceof Error
+          ? failed[0].reason.message
+          : 'Error al enviar las respuestas.'
+      )
+    } else {
+      setState('success')
     }
   }
 
