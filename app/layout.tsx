@@ -75,11 +75,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "https://cdn.lovepostal.studio/profile_pictures/profile_picture_lovepostal_7.webp",
-        type: "image/webp",
+        url: "https://cdn.lovepostal.studio/PNG/isotipo_lovepostal_terracotaoscuro_1.png",
+        type: "image/png",
       },
     ],
-    apple: "https://cdn.lovepostal.studio/profile_pictures/profile_picture_lovepostal_7.webp",
+    apple: "https://cdn.lovepostal.studio/PNG/isotipo_lovepostal_terracotaoscuro_1.png",
   },
 }
 

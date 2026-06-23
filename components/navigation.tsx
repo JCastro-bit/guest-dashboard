@@ -101,7 +101,7 @@ function BrandLogo({ collapsed, inSidebar = true }: { collapsed: boolean; inSide
     }
     return (
       <Image
-        src="https://cdn.lovepostal.studio/isotipos/isotipo_lovepostal_10.webp"
+        src="https://cdn.lovepostal.studio/PNG/isotipo_lovepostal_terracotaoscuro_1.png"
         alt="LOVEPOSTAL"
         width={40}
         height={40}
@@ -115,8 +115,8 @@ function BrandLogo({ collapsed, inSidebar = true }: { collapsed: boolean; inSide
   }
 
   const logoSrc = resolvedTheme === "dark"
-    ? "https://cdn.lovepostal.studio/logotipos/logo_lovepostal_4.webp"
-    : "https://cdn.lovepostal.studio/logotipos/logo_lovepostal_6.webp"
+    ? "https://cdn.lovepostal.studio/PNG/imagotipo_lovepostal_blanco_1.png"
+    : "https://cdn.lovepostal.studio/PNG/imagotipo_lovepostal_terracotaoscuro_1.png"
 
   return (
     <Image

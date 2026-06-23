@@ -74,7 +74,7 @@ export default function WelcomePage() {
       <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://cdn.lovepostal.studio/logotipos/logo_lovepostal_4.webp"
+          src="https://cdn.lovepostal.studio/PNG/imagotipo_lovepostal_terracotaoscuro_1.png"
           alt="LOVEPOSTAL"
           width={160}
           height={40}
@@ -241,7 +241,7 @@ export default function WelcomePage() {
       <footer className="max-w-5xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://cdn.lovepostal.studio/isotipos/isotipo_lovepostal_8.webp"
+          src="https://cdn.lovepostal.studio/PNG/isotipo_lovepostal_terracotaoscuro_1.png"
           alt="LOVEPOSTAL"
           width={28}
           height={28}
