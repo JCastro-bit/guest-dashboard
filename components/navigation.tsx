@@ -99,9 +99,12 @@ function BrandLogo({ collapsed, inSidebar = true }: { collapsed: boolean; inSide
     if (!mounted) {
       return <span className={cn("font-serif font-bold text-lg", fallbackTextClass)}>LP</span>
     }
+    const isotipoSrc = resolvedTheme === "dark"
+      ? "https://cdn.lovepostal.studio/PNG/isotipo_lovepostal_blanco_1.png"
+      : "https://cdn.lovepostal.studio/PNG/isotipo_lovepostal_terracotaoscuro_1.png"
     return (
       <Image
-        src="https://cdn.lovepostal.studio/PNG/isotipo_lovepostal_terracotaoscuro_1.png"
+        src={isotipoSrc}
         alt="LOVEPOSTAL"
         width={40}
         height={40}
